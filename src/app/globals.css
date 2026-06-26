@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FAFAFA;
+  --foreground: #1F2937;
+  --card-bg: #FFFFFF;
+  --card-border: #E5E7EB;
+  
+  --primary: #6D28D9;
+  --primary-light: #A78BFA;
+  --accent: #FBBF24;
+  --accent-dark: #D97706;
+  
+  --muted: #6B7280;
+  --muted-light: #F3F4F6;
+  
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+}
+
+.dark {
+  --background: #0B0F19;
+  --foreground: #F3F4F6;
+  --card-bg: #111827;
+  --card-border: #1F2937;
+  
+  --primary: #A78BFA;
+  --primary-light: #6D28D9;
+  --accent: #FBBF24;
+  --accent-dark: #FCD34D;
+  
+  --muted: #9CA3AF;
+  --muted-light: #1F2937;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card-bg);
+  --color-card-border: var(--card-border);
+  
+  --color-sharon-primary: var(--primary);
+  --color-sharon-primary-light: var(--primary-light);
+  --color-sharon-accent: var(--accent);
+  --color-sharon-accent-dark: var(--accent-dark);
+  
+  --color-sharon-muted: var(--muted);
+  --color-sharon-muted-light: var(--muted-light);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Premium Card Glassmorphism & Gold Accent Borders */
+.sharon-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.sharon-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+}
+
+.sharon-card-gold {
+  border-top: 3px solid var(--accent);
+}
+
+.sharon-card-purple {
+  border-top: 3px solid var(--primary);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-light);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Custom glass blur */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-panel {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Command Palette Backdrop */
+.dialog-overlay {
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+}
+.dark .dialog-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
