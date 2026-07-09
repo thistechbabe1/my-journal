@@ -9,7 +9,7 @@ interface AuthContextType {
   session: any | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signUp: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string) => Promise<{ error: any; session: any | null }>;
   signOut: () => Promise<void>;
   isDemo: boolean;
 }
@@ -37,9 +37,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       setLoading(false);
 
-      // Redirect logic: if no user and not on auth page, redirect to auth
-      if (!session && pathname !== '/auth') {
-        router.push('/auth');
+      const isAuthRoute = pathname === '/login' || pathname === '/register';
+      // Redirect logic: if no user and not on auth pages, redirect to login
+      if (!session && !isAuthRoute) {
+        router.push('/login');
       }
     });
 
@@ -49,12 +50,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       setLoading(false);
 
+      const isAuthRoute = pathname === '/login' || pathname === '/register';
       if (session) {
-        if (pathname === '/auth') {
+        if (isAuthRoute) {
           router.push('/');
         }
-      } else if (pathname !== '/auth') {
-        router.push('/auth');
+      } else if (!isAuthRoute) {
+        router.push('/login');
       }
     });
 
@@ -83,13 +85,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({ email, password });
-      if (error) return { error };
+      if (error) return { error, session: null };
       setSession(data.session);
       setUser(data.user);
-      router.push('/');
-      return { error: null };
+      
+      // If a session is established immediately (e.g. email confirmation disabled), redirect
+      if (data.session) {
+        router.push('/');
+      }
+      return { error: null, session: data.session };
     } catch (err: any) {
-      return { error: err.message || err };
+      return { error: err.message || err, session: null };
     } finally {
       setLoading(false);
     }
@@ -101,7 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setSession(null);
     setLoading(false);
-    router.push('/auth');
+    router.push('/login');
   };
 
   return (

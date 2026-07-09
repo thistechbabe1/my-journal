@@ -1,38 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,300;1,8..60,400;1,8..60,500;1,8..60,600;1,8..60,700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #FAFAFA;
-  --foreground: #1F2937;
+  --background: #FAF7F2;
+  --foreground: #2D2926;
   --card-bg: #FFFFFF;
-  --card-border: #E5E7EB;
+  --card-border: #E9E3D9;
   
-  --primary: #6D28D9;
-  --primary-light: #A78BFA;
-  --accent: #FBBF24;
-  --accent-dark: #D97706;
+  --primary: #AC5A46;
+  --primary-light: #C8806F;
+  --accent: #5C7465;
+  --accent-dark: #425348;
   
-  --muted: #6B7280;
-  --muted-light: #F3F4F6;
+  --muted: #7A7570;
+  --muted-light: #F4F0E8;
   
-  --success: #10B981;
-  --warning: #F59E0B;
-  --danger: #EF4444;
+  --success: #5C7465;
+  --warning: #C2A778;
+  --danger: #A65B5B;
+
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-journal: 'Source Serif 4', Georgia, serif;
 }
 
 .dark {
-  --background: #0B0F19;
-  --foreground: #F3F4F6;
-  --card-bg: #111827;
-  --card-border: #1F2937;
+  --background: #141312;
+  --foreground: #EAE6E1;
+  --card-bg: #1C1A19;
+  --card-border: #262422;
   
-  --primary: #A78BFA;
-  --primary-light: #6D28D9;
-  --accent: #FBBF24;
-  --accent-dark: #FCD34D;
+  --primary: #C47D6C;
+  --primary-light: #8E584C;
+  --accent: #8EA897;
+  --accent-dark: #A6BEAE;
   
-  --muted: #9CA3AF;
-  --muted-light: #1F2937;
+  --muted: #928C86;
+  --muted-light: #22201F;
 }
+
 
 @theme inline {
   --color-background: var(--background);
@@ -47,39 +53,39 @@
   
   --color-sharon-muted: var(--muted);
   --color-sharon-muted-light: var(--muted-light);
+  
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-serif: var(--font-serif), Georgia, serif;
+  --font-journal: var(--font-journal), Georgia, serif;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: var(--font-sans), sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Premium Card Glassmorphism & Gold Accent Borders */
+h1, h2, h3, h4, h5, h6, .font-serif-editorial {
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+/* Premium Minimalist Card */
 .sharon-card {
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border-radius: 0.5rem;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .sharon-card:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-}
-
-.sharon-card-gold {
-  border-top: 3px solid var(--accent);
-}
-
-.sharon-card-purple {
-  border-top: 3px solid var(--primary);
+  border-color: var(--primary);
 }
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -87,35 +93,30 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--primary-light);
-  border-radius: 3px;
+  background: var(--card-border);
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  background: var(--primary-light);
 }
 
-/* Custom glass blur */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.dark .glass-panel {
-  background: rgba(17, 24, 39, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Command Palette Backdrop */
+/* Simple Dialog Overlay */
 .dialog-overlay {
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
+  background-color: rgba(21, 20, 19, 0.4);
+  backdrop-filter: blur(2px);
 }
 .dark .dialog-overlay {
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  background-color: rgba(21, 20, 19, 0.7);
+  backdrop-filter: blur(2px);
+}
+
+/* Base Editorial Page Transitions */
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }

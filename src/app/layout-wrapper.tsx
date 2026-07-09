@@ -1,70 +1,82 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import Sidebar from '@/components/sidebar';
 import CommandPalette from '@/components/command-palette';
-import { Sparkles } from 'lucide-react';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user, loading } = useAuth();
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  // Premium loading screen
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setMobileSidebarOpen(false);
+  }, [pathname]);
+
+  // Clean, editorial loading screen
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-[#0B0F19] flex flex-col items-center justify-center text-white z-50">
-        <div className="relative flex flex-col items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-sharon-primary flex items-center justify-center text-white shadow-2xl relative overflow-hidden animate-bounce">
-            <span className="font-bold text-2xl">S</span>
-            <div className="absolute top-0 right-0 w-3 h-3 bg-sharon-accent rounded-full animate-pulse" />
-          </div>
-          <div className="flex items-center gap-2">
-            <Sparkles className="text-sharon-accent animate-spin" size={16} />
-            <span className="text-sm font-bold tracking-widest uppercase text-sharon-primary-light">
-              Project Sharon
-            </span>
-          </div>
-          <div className="w-48 h-1.5 bg-gray-800 rounded-full overflow-hidden mt-2 border border-gray-700/50">
-            <div className="h-full bg-gradient-to-r from-sharon-primary to-sharon-accent rounded-full animate-infinite-scroll" style={{ width: '40%', animation: 'loading-bar 1.5s infinite ease-in-out' }} />
-          </div>
+      <div className="fixed inset-0 bg-background flex flex-col items-center justify-center text-foreground z-50">
+        <div className="flex flex-col items-center gap-3">
+          <span className="font-serif text-3xl font-light tracking-wide text-foreground">Sharon</span>
+          <span className="text-[10px] uppercase tracking-widest text-sharon-muted font-bold tracking-widest animate-pulse">
+            Sanctuary is preparing
+          </span>
         </div>
-        <style jsx>{`
-          @keyframes loading-bar {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(250%); }
-          }
-        `}</style>
       </div>
     );
   }
 
-  const isAuthPage = pathname === '/auth';
+  const isAuthPage = pathname === '/login' || pathname === '/register';
 
   // If auth page, render without sidebar layout
   if (isAuthPage) {
     return <div className="min-h-screen flex flex-col bg-background">{children}</div>;
   }
 
-  // If no user (and auth provider is redirecting), show spinner to prevent content flashing
+  // If no user (and auth provider is redirecting), show clean spinner to prevent content flashing
   if (!user) {
     return (
-      <div className="fixed inset-0 bg-[#0B0F19] flex items-center justify-center text-white z-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-sharon-primary" />
+      <div className="fixed inset-0 bg-background flex items-center justify-center text-foreground z-50">
+        <div className="w-6 h-6 border-2 border-sharon-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  // Standard application wrapper layout
   return (
-    <div className="min-h-screen flex bg-background text-foreground overflow-hidden">
+    <div className="min-h-screen flex flex-col md:flex-row bg-background text-foreground overflow-hidden">
+      {/* Mobile Top Bar */}
+      <div className="md:hidden flex items-center justify-between px-5 py-3.5 bg-card border-b border-card-border sticky top-0 z-30">
+        <button
+          onClick={() => setMobileSidebarOpen(true)}
+          className="p-1 -ml-1 rounded-lg hover:bg-sharon-muted-light/60 text-sharon-muted hover:text-foreground cursor-pointer transition-colors"
+          aria-label="Open navigation"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+        <span className="font-serif text-xl font-medium tracking-wide text-foreground">Sharon</span>
+        <div className="w-6" /> {/* Balance space */}
+      </div>
+
+      {/* Mobile Drawer Backdrop */}
+      {mobileSidebarOpen && (
+        <div
+          onClick={() => setMobileSidebarOpen(false)}
+          className="md:hidden fixed inset-0 bg-black/25 backdrop-blur-xs z-30 transition-opacity duration-200"
+        />
+      )}
+
       {/* Side navigation */}
-      <Sidebar />
+      <Sidebar mobileOpen={mobileSidebarOpen} setMobileOpen={setMobileSidebarOpen} />
 
       {/* Main content pane */}
-      <main className="flex-1 h-screen overflow-y-auto px-6 py-8 md:px-10 lg:px-12 scrollbar-thin">
-        <div className="max-w-6xl mx-auto space-y-8 animate-fade-in">
+      <main className="flex-1 h-[calc(100vh-53px)] md:h-screen overflow-y-auto px-4 py-6 md:px-8 lg:px-12 md:py-8 scrollbar-thin">
+        <div className="max-w-5xl mx-auto w-full space-y-8 animate-fade-in">
           {children}
         </div>
       </main>

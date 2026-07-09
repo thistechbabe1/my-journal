@@ -3,21 +3,24 @@
 import React, { useState } from 'react';
 import { useHabits } from '@/hooks/use-habits';
 import {
-  Sparkles,
   Plus,
   Trash2,
-  CheckCircle,
-  Calendar,
-  Flame,
-  TrendingUp,
-  X
+  Check,
+  Calendar
 } from 'lucide-react';
+import { useToast } from '@/components/feedback/ToastProvider';
+import ConfirmationModal from '@/components/feedback/ConfirmationModal';
 
 export default function HabitsPage() {
   const todayStr = new Date().toISOString().split('T')[0];
   const [selectedDate, setSelectedDate] = useState(todayStr);
   const [newHabitName, setNewHabitName] = useState('');
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
+
+  // Delete modal state
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
   const {
     habits,
@@ -34,13 +37,34 @@ export default function HabitsPage() {
     setSaving(true);
     const { error } = await addHabit(newHabitName);
     setSaving(false);
-    if (!error) {
+    if (error) {
+      toast(`Error creating rhythm: ${error}`, 'error');
+    } else {
       setNewHabitName('');
+      toast('Rhythm created.', 'success');
     }
   };
 
   const handleToggle = async (habitId: string, completed: boolean) => {
     await toggleHabit(habitId, completed);
+  };
+
+  const handleDeleteTrigger = (id: string) => {
+    setDeleteTargetId(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTargetId) return;
+    const { error } = await deleteHabit(deleteTargetId);
+    setIsDeleteModalOpen(false);
+    setDeleteTargetId(null);
+
+    if (error) {
+      toast(`Error deleting rhythm: ${error}`, 'error');
+    } else {
+      toast('Rhythm deleted.', 'success');
+    }
   };
 
   // Helper: Generate calendar blocks for the last 30 days
@@ -62,24 +86,24 @@ export default function HabitsPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10 max-w-4xl mx-auto py-2">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-card-border pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-card-border/60 pb-6 text-left font-sans">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-sharon-primary via-indigo-500 to-sharon-primary-light bg-clip-text text-transparent">
-            Habit Operating System
+          <h1 className="text-4xl font-serif font-light tracking-wide text-foreground">
+            Daily Rhythms
           </h1>
-          <p className="text-sm text-sharon-muted mt-1.5">
-            Log daily micro-habits, build streaks, and maintain high performance consistency.
+          <p className="text-xs text-sharon-muted mt-1.5">
+            A quiet space to capture daily intentions and track consistent steps.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Calendar size={16} className="text-sharon-muted" />
+        <div className="flex items-center gap-2 bg-card border border-card-border px-3 py-1.5 rounded-lg">
+          <Calendar size={13} className="text-sharon-muted" />
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="bg-[#111622]/10 border border-card-border rounded-xl px-3 py-1.5 text-xs outline-none text-foreground font-bold"
+            className="bg-transparent border-0 text-xs outline-none text-foreground font-medium cursor-pointer"
           />
         </div>
       </div>
@@ -88,62 +112,59 @@ export default function HabitsPage() {
         
         {/* Left Side: Checklist & Habit Manager */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="sharon-card p-5 space-y-6 border-t-3 border-sharon-primary">
-            <div>
-              <h3 className="font-bold text-base">Checklist - {formatHeaderDate(selectedDate)}</h3>
-              <p className="text-xs text-sharon-muted mt-1">
-                Toggle completion to update daily stats.
+          <div className="sharon-card p-6 space-y-6">
+            <div className="text-left font-sans">
+              <h3 className="font-serif text-lg font-medium text-foreground">{formatHeaderDate(selectedDate)}</h3>
+              <p className="text-[11px] text-sharon-muted mt-1">
+                Review and check off your daily intentions.
               </p>
             </div>
 
             {/* Checklist */}
             {loading ? (
               <div className="py-10 text-center">
-                <div className="w-6 h-6 border-2 border-sharon-primary border-t-transparent rounded-full animate-spin mx-auto" />
+                <div className="w-5 h-5 border border-sharon-primary border-t-transparent rounded-full animate-spin mx-auto" />
               </div>
             ) : habits.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-3 text-left">
                 {habits.map((habit) => {
                   const isCompleted = habit.logs && habit.logs.length > 0 && habit.logs[0].completed;
                   return (
                     <div
                       key={habit.id}
-                      className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${
-                        isCompleted
-                          ? 'border-sharon-primary/40 bg-sharon-primary-light/5'
-                          : 'border-card-border hover:border-sharon-primary-light/30'
-                      }`}
+                      className="flex items-center justify-between p-3 rounded-lg border border-card-border bg-card transition-all hover:border-sharon-primary/50"
                     >
                       <button
                         onClick={() => handleToggle(habit.id, !isCompleted)}
                         className="flex items-center gap-3 text-left flex-1 cursor-pointer"
                       >
                         <div
-                          className={`w-6 h-6 rounded-full flex items-center justify-center border transition-all ${
+                          className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all ${
                             isCompleted
-                              ? 'bg-sharon-primary border-sharon-primary text-white'
-                              : 'border-card-border bg-card hover:border-sharon-primary'
+                              ? 'bg-sharon-accent border-sharon-accent text-white'
+                              : 'border-card-border bg-transparent hover:border-sharon-primary'
                           }`}
                         >
-                          {isCompleted && <CheckCircle size={14} />}
+                          {isCompleted && <Check size={11} />}
                         </div>
-                        <span className={`text-xs font-semibold ${isCompleted ? 'line-through text-sharon-muted' : ''}`}>
+                        <span className={`text-xs font-medium font-sans ${isCompleted ? 'line-through text-sharon-muted' : 'text-foreground'}`}>
                           {habit.name}
                         </span>
                       </button>
 
-                      <div className="flex items-center gap-3">
-                        {/* Streak fire badge */}
-                        <div className="flex items-center gap-0.5 text-xs font-bold text-sharon-accent-dark dark:text-sharon-accent bg-sharon-accent/10 px-2 py-0.5 rounded">
-                          <Flame size={12} className="animate-pulse" />
-                          <span>{habit.streak || 0}d</span>
-                        </div>
+                      <div className="flex items-center gap-3 font-sans">
+                        {/* Streak label */}
+                        {habit.streak !== undefined && habit.streak > 0 && (
+                          <span className="font-serif italic text-xs text-sharon-muted">
+                            {habit.streak}d streak
+                          </span>
+                        )}
                         
                         <button
-                          onClick={() => deleteHabit(habit.id)}
-                          className="text-sharon-muted hover:text-danger p-1 rounded transition-colors"
+                          onClick={() => handleDeleteTrigger(habit.id)}
+                          className="text-sharon-muted hover:text-danger p-1 rounded transition-colors cursor-pointer"
                         >
-                          <Trash2 size={13} />
+                          <Trash2 size={12} />
                         </button>
                       </div>
                     </div>
@@ -151,93 +172,87 @@ export default function HabitsPage() {
                 })}
               </div>
             ) : (
-              <div className="p-8 text-center text-sharon-muted bg-sharon-muted-light/20 rounded-xl">
-                <p className="text-xs font-bold">No habits registered.</p>
-                <p className="text-[10px] mt-1">Register a habit using the input below.</p>
+              <div className="py-6 text-center text-sharon-muted font-sans italic text-xs">
+                No rhythms established for today.
               </div>
             )}
 
-            {/* Create new habit */}
-            <form onSubmit={handleCreateHabit} className="flex gap-2 border-t border-card-border/60 pt-4">
+            {/* Quick Add Form */}
+            <form onSubmit={handleCreateHabit} className="flex gap-2 pt-4 border-t border-card-border/60 font-sans">
               <input
                 type="text"
-                placeholder="e.g. Exercise, Morning Prayer, Deep Work..."
+                placeholder="Establish new rhythm..."
                 value={newHabitName}
                 onChange={(e) => setNewHabitName(e.target.value)}
-                className="w-full bg-[#111622]/10 border border-card-border rounded-xl py-2 px-3 text-xs outline-none focus:border-sharon-primary text-foreground"
+                className="flex-1 bg-sharon-muted-light/30 border border-card-border rounded-lg py-2 px-3 text-xs outline-none focus:border-sharon-primary text-foreground font-medium"
+                required
               />
               <button
                 type="submit"
                 disabled={saving}
-                className="px-3.5 py-2 rounded-xl bg-sharon-primary hover:bg-sharon-primary-light text-white text-xs font-bold shrink-0 flex items-center justify-center cursor-pointer disabled:opacity-50"
+                className="px-3 py-2 bg-sharon-primary hover:bg-sharon-primary-light text-white rounded-lg border border-transparent text-xs font-semibold flex items-center justify-center gap-1 cursor-pointer disabled:opacity-50 transition-colors"
               >
                 <Plus size={14} />
+                <span>Add</span>
               </button>
             </form>
           </div>
         </div>
 
-        {/* Right Side: Month Heatmaps & Stats */}
+        {/* Right Side: Consistency Grid (30 Day) */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="sharon-card p-5 sharon-card-gold space-y-6">
+          <div className="sharon-card p-6 space-y-6 text-left font-sans">
             <div>
-              <div className="flex items-center gap-2">
-                <TrendingUp className="text-sharon-accent" size={20} />
-                <h3 className="font-bold text-base">Consistency Tracking (Last 30 Days)</h3>
-              </div>
-              <p className="text-xs text-sharon-muted mt-1">
-                Visual grid grids plotting completion records over the last 30 consecutive days.
+              <h3 className="font-serif text-lg font-medium text-foreground">30-Day Consistency</h3>
+              <p className="text-[11px] text-sharon-muted mt-1">
+                Visualizing your consistent practice over the past month.
               </p>
             </div>
 
             {loading ? (
               <div className="py-10 text-center">
-                <div className="w-6 h-6 border-2 border-sharon-primary border-t-transparent rounded-full animate-spin mx-auto" />
+                <div className="w-5 h-5 border border-sharon-primary border-t-transparent rounded-full animate-spin mx-auto" />
               </div>
             ) : habits.length > 0 ? (
               <div className="space-y-6">
                 {habits.map((habit) => {
-                  // Fetch list of dates completed for this habit
-                  const completedDates = (habit.logs || [])
-                    .filter((l) => l.completed)
-                    .map((l) => l.date);
-
+                  const completedDates = habit.logs
+                    ? habit.logs.filter((l) => l.completed).map((l) => l.date)
+                    : [];
+                  
                   return (
-                    <div key={habit.id} className="space-y-2 border-b border-card-border/50 pb-4 last:border-0 last:pb-0">
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="font-bold text-foreground">{habit.name}</span>
-                        <div className="flex items-center gap-2 text-sharon-muted font-semibold text-[10px]">
-                          <span>Rate: {habit.completionRate || 0}%</span>
-                          <span>|</span>
-                          <span className="flex items-center text-sharon-accent-dark dark:text-sharon-accent">
-                            <Flame size={10} className="mr-0.5" />
-                            {habit.streak || 0} day streak
-                          </span>
+                    <div key={habit.id} className="space-y-3">
+                      <div className="flex justify-between items-center text-xs font-semibold">
+                        <span className="text-foreground">{habit.name}</span>
+                        <div className="flex items-center gap-1.5 text-sharon-muted text-[10px]">
+                          <span>{completedDates.length} of 30 days completed</span>
+                          {habit.streak !== undefined && habit.streak > 0 && (
+                            <>
+                              <span>•</span>
+                              <span className="font-serif italic">{habit.streak}d streak</span>
+                            </>
+                          )}
                         </div>
                       </div>
 
                       {/* Heatmap Grid */}
-                      <div className="flex flex-wrap gap-1.5 p-2 rounded-xl bg-sharon-muted-light/10 border border-card-border/50">
+                      <div className="flex flex-wrap gap-1.5 p-3 rounded-lg border border-card-border bg-card">
                         {last30Days.map((dateStr) => {
-                          // In mock mode, check if completed (logs has completions)
-                          // Since in use-habits mock load we pass all completions merged in logs, 
-                          // we can look up completedDates.
                           const isCompleted = completedDates.includes(dateStr);
-                          
-                          // Tooltip date description
+                          const dayNum = new Date(dateStr).getDate();
                           const shortDateStr = new Date(dateStr).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
                           
                           return (
                             <div
                               key={dateStr}
-                              className={`w-5 h-5 rounded-md text-[8px] flex items-center justify-center font-bold select-none cursor-pointer transition-all ${
+                              className={`w-6 h-6 rounded text-[9px] flex items-center justify-center font-medium select-none cursor-pointer transition-all ${
                                 isCompleted
-                                  ? 'bg-sharon-primary text-white shadow-sm'
-                                  : 'bg-sharon-muted-light/60 hover:bg-sharon-muted-light text-sharon-muted/50 border border-card-border/20'
+                                  ? 'bg-sharon-accent text-white font-semibold'
+                                  : 'bg-sharon-muted-light/40 hover:bg-sharon-muted-light text-sharon-muted/50 border border-card-border/30'
                               }`}
-                              title={`${shortDateStr}: ${isCompleted ? 'Completed' : 'Missed'}`}
+                              title={`${shortDateStr}: ${isCompleted ? 'Completed' : 'Unfinished'}`}
                             >
-                              {new Date(dateStr).getDate()}
+                              {dayNum}
                             </div>
                           );
                         })}
@@ -247,13 +262,26 @@ export default function HabitsPage() {
                 })}
               </div>
             ) : (
-              <div className="p-8 text-center text-sharon-muted">
-                No habit consistency data available. Add habits first.
+              <div className="p-8 text-center text-sharon-muted italic text-xs">
+                No rhythm records available. Add rhythms to start tracking.
               </div>
             )}
           </div>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        title="Delete this rhythm?"
+        message="This action can't be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+          setDeleteTargetId(null);
+        }}
+      />
     </div>
   );
 }

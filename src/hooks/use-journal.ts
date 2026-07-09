@@ -19,12 +19,15 @@ export function useJournal(filters?: {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const filterString = filters ? JSON.stringify(filters) : '';
+
   const fetchJournalData = useCallback(async () => {
     if (!user) return;
     setLoading(true);
     setError(null);
     try {
-      const { data, error } = await journalService.getEntries(user.id, filters);
+      const parsedFilters = filterString ? JSON.parse(filterString) : undefined;
+      const { data, error } = await journalService.getEntries(user.id, parsedFilters);
       if (error) throw error;
       setEntries(data || []);
 
@@ -37,7 +40,7 @@ export function useJournal(filters?: {
     } finally {
       setLoading(false);
     }
-  }, [user, filters]);
+  }, [user, filterString]);
 
   useEffect(() => {
     fetchJournalData();
