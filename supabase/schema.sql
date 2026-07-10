@@ -391,3 +391,116 @@ CREATE TABLE ai_insights (
 ALTER TABLE ai_insights ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can manage their own AI insights" ON ai_insights 
   FOR ALL USING (auth.uid() = user_id);
+
+-- DAILY CHECK-INS
+CREATE TABLE daily_check_ins (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL,
+  date DATE DEFAULT CURRENT_DATE NOT NULL,
+  prayed BOOLEAN DEFAULT false,
+  exercised BOOLEAN DEFAULT false,
+  built_text TEXT,
+  learned_new BOOLEAN DEFAULT false,
+  networked BOOLEAN DEFAULT false,
+  energy INT CHECK (energy >= 1 AND energy <= 10),
+  mood INT CHECK (mood >= 1 AND mood <= 5),
+  win TEXT,
+  improve TEXT,
+  UNIQUE(user_id, date)
+);
+
+ALTER TABLE daily_check_ins ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can manage their own daily check-ins" ON daily_check_ins 
+  FOR ALL USING (auth.uid() = user_id);
+
+-- INTELLECTUAL GROWTH LOGS
+CREATE TABLE intellectual_growth_logs (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL,
+  date DATE DEFAULT CURRENT_DATE NOT NULL,
+  rotation_type TEXT NOT NULL,
+  response TEXT,
+  completed BOOLEAN DEFAULT false,
+  UNIQUE(user_id, date)
+);
+
+ALTER TABLE intellectual_growth_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can manage their own growth logs" ON intellectual_growth_logs 
+  FOR ALL USING (auth.uid() = user_id);
+
+-- CAMPAIGNS
+CREATE TABLE campaigns (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  status TEXT CHECK (status IN ('active', 'completed', 'archived')) DEFAULT 'active',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
+ALTER TABLE campaigns ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can manage their own campaigns" ON campaigns 
+  FOR ALL USING (auth.uid() = user_id);
+
+-- CAMPAIGN TASKS
+CREATE TABLE campaign_tasks (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  campaign_id UUID REFERENCES campaigns ON DELETE CASCADE NOT NULL,
+  title TEXT NOT NULL,
+  prompt TEXT,
+  draft TEXT DEFAULT '',
+  completed BOOLEAN DEFAULT false,
+  published BOOLEAN DEFAULT false,
+  order_index INT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
+ALTER TABLE campaign_tasks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can manage tasks for their own campaigns" ON campaign_tasks 
+  FOR ALL USING (
+    EXISTS (
+      SELECT 1 FROM campaigns 
+      WHERE campaigns.id = campaign_tasks.campaign_id 
+      AND campaigns.user_id = auth.uid()
+    )
+  );
+
+-- SEASONS
+CREATE TABLE seasons (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL,
+  name TEXT NOT NULL,
+  theme TEXT NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  primary_focus TEXT NOT NULL,
+  supporting_focus TEXT,
+  intentions TEXT NOT NULL,
+  review TEXT,
+  status TEXT CHECK (status IN ('active', 'archived')) DEFAULT 'active',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
+ALTER TABLE seasons ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can manage their own seasons" ON seasons 
+  FOR ALL USING (auth.uid() = user_id);
+
+-- FUTURE LETTERS
+CREATE TABLE future_letters (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL,
+  month TEXT NOT NULL, -- YYYY-MM
+  becoming_woman TEXT,
+  habits_built TEXT,
+  fears_smaller TEXT,
+  relationships_grown TEXT,
+  future_thanks TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()),
+  UNIQUE(user_id, month)
+);
+
+ALTER TABLE future_letters ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can manage their own future letters" ON future_letters 
+  FOR ALL USING (auth.uid() = user_id);

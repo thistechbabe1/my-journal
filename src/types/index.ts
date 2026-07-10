@@ -110,3 +110,78 @@ export interface HabitLog {
   completed: boolean;
   created_at: string;
 }
+
+export interface Campaign {
+  id: string;
+  user_id: string;
+  title: string;
+  description: string | null;
+  start_date: string;
+  end_date: string;
+  status: 'active' | 'completed' | 'archived';
+  created_at: string;
+  tasks?: CampaignTask[];
+}
+
+export interface CampaignTask {
+  id: string;
+  campaign_id: string;
+  title: string;
+  prompt: string | null;
+  draft: string;
+  completed: boolean;
+  published: boolean;
+  order_index: number;
+  created_at: string;
+}
+
+export interface Season {
+  id: string;
+  user_id: string;
+  name: string;
+  theme: string;
+  start_date: string;
+  end_date: string;
+  primary_focus: string;
+  supporting_focus: string | null;
+  intentions: string;
+  review: string | null;
+  status: 'active' | 'archived';
+  created_at: string;
+}
+
+export interface FutureLetter {
+  id: string;
+  user_id: string;
+  month: string; // YYYY-MM
+  becoming_woman: string | null;
+  habits_built: string | null;
+  fears_smaller: string | null;
+  relationships_grown: string | null;
+  future_thanks: string | null;
+  created_at: string;
+}
+
+export interface DailyCheckIn {
+  id: string;
+  user_id: string;
+  date: string; // YYYY-MM-DD
+  prayed: boolean;
+  exercised: boolean;
+  built_text: string | null;
+  learned_new: boolean;
+  networked: boolean;
+  energy: number; // 1-10
+  mood: number; // 1-5
+  win: string | null;
+  improve: string | null;
+}
+
+export interface IntellectualGrowthLog {
+  id: string;
+  user_id: string;
+  date: string; // YYYY-MM-DD
+  rotation_type: string;
+  response: string;
+  completed: boolean;
+}

@@ -139,6 +139,43 @@ const MOCK_REVIEWS = [
   { id: 'r1', user_id: MOCK_PROFILE.id, period_type: 'weekly', period_key: '2026-W25', win: 'Finished the technical architecture schema design for the new dashboard system.', lesson: 'If I spend too much time on design variations, I lose time for development. Iterate faster.', mistake: 'Stayed up too late on Wednesday reading forums. Destroyed Thursday productivity.', avoided: 'Avoided taking on additional freelance work to stay focused.', improved: 'Improved morning routine consistency by preparing clothes the night before.', focus: 'Phase 1 launch of Project Sharon code base.', created_at: new Date(Date.now() - 86400000 * 3).toISOString() }
 ];
 
+const MOCK_CAMPAIGNS = [
+  { id: 'c1', user_id: MOCK_PROFILE.id, title: 'Graduation 2026', description: '14-day storytelling countdown before my software engineering graduation', start_date: '2026-07-12', end_date: '2026-07-26', status: 'active', created_at: new Date().toISOString() }
+];
+
+const MOCK_CAMPAIGN_TASKS = [
+  { id: 'ct14', campaign_id: 'c1', title: 'Day 14', prompt: 'Why I chose Software Engineering.', draft: 'My journey into software engineering started with curiosity...', completed: true, published: true, order_index: 14, created_at: new Date().toISOString() },
+  { id: 'ct13', campaign_id: 'c1', title: 'Day 13', prompt: 'My lowest academic point and what it taught me.', draft: '', completed: false, published: false, order_index: 13, created_at: new Date().toISOString() },
+  { id: 'ct12', campaign_id: 'c1', title: 'Day 12', prompt: 'Discovering tech communities (GDSC/GDG).', draft: '', completed: false, published: false, order_index: 12, created_at: new Date().toISOString() },
+  { id: 'ct11', campaign_id: 'c1', title: 'Day 11', prompt: 'My first leadership role.', draft: '', completed: false, published: false, order_index: 11, created_at: new Date().toISOString() },
+  { id: 'ct10', campaign_id: 'c1', title: 'Day 10', prompt: 'Lessons from internships.', draft: '', completed: false, published: false, order_index: 10, created_at: new Date().toISOString() },
+  { id: 'ct9', campaign_id: 'c1', title: 'Day 9', prompt: 'Planning my first major event.', draft: '', completed: false, published: false, order_index: 9, created_at: new Date().toISOString() },
+  { id: 'ct8', campaign_id: 'c1', title: 'Day 8', prompt: 'Learning to work with people.', draft: '', completed: false, published: false, order_index: 8, created_at: new Date().toISOString() },
+  { id: 'ct7', campaign_id: 'c1', title: 'Day 7', prompt: 'The semester I earned a 5.0.', draft: '', completed: false, published: false, order_index: 7, created_at: new Date().toISOString() },
+  { id: 'ct6', campaign_id: 'c1', title: 'Day 6', prompt: 'Final-year project lessons.', draft: '', completed: false, published: false, order_index: 6, created_at: new Date().toISOString() },
+  { id: 'ct5', campaign_id: 'c1', title: 'Day 5', prompt: 'Building beyond the classroom.', draft: '', completed: false, published: false, order_index: 5, created_at: new Date().toISOString() },
+  { id: 'ct4', campaign_id: 'c1', title: 'Day 4', prompt: 'The people who shaped my journey.', draft: '', completed: false, published: false, order_index: 4, created_at: new Date().toISOString() },
+  { id: 'ct3', campaign_id: 'c1', title: 'Day 3', prompt: 'What graduating actually feels like.', draft: '', completed: false, published: false, order_index: 3, created_at: new Date().toISOString() },
+  { id: 'ct2', campaign_id: 'c1', title: 'Day 2', prompt: 'What comes next.', draft: '', completed: false, published: false, order_index: 2, created_at: new Date().toISOString() },
+  { id: 'ct1', campaign_id: 'c1', title: 'Day 1', prompt: 'Gratitude and excitement for graduation.', draft: '', completed: false, published: false, order_index: 1, created_at: new Date().toISOString() }
+];
+
+const MOCK_SEASONS = [
+  { id: 's1', user_id: MOCK_PROFILE.id, name: 'Building Foundations', theme: 'Consistency over intensity', start_date: '2026-07-01', end_date: '2026-09-30', primary_focus: 'Career', supporting_focus: 'Health & Learning', intentions: 'Establish robust coding rhythms, complete 15k training runs, read leadership biographies.', status: 'active', created_at: new Date().toISOString() }
+];
+
+const MOCK_FUTURE_LETTERS = [
+  { id: 'fl1', user_id: MOCK_PROFILE.id, month: '2026-06', becoming_woman: 'I am learning to speak convictions with grace and handle leadership challenges.', habits_built: 'Daily journaling is at 90%, morning prayers are consistent.', fears_smaller: 'Fears of leadership capability are shrinking as I practice daily.', relationships_grown: 'Connected with old tech mentors and strengthened family check-ins.', future_thanks: 'Future Sharon will thank me for starting Project Sharon today.', created_at: new Date().toISOString() }
+];
+
+const MOCK_DAILY_CHECKINS = [
+  { id: 'dc1', user_id: MOCK_PROFILE.id, date: new Date(Date.now() - 86400000).toISOString().split('T')[0], prayed: true, exercised: true, built_text: 'Completed Next.js auth split routing and tested the build', learned_new: true, networked: false, energy: 8, mood: 4, win: 'Pushed local branch changes to GitHub main', improve: 'Focus on getting to bed by 10:30 PM' }
+];
+
+const MOCK_INTELLECTUAL_LOGS = [
+  { id: 'ig1', user_id: MOCK_PROFILE.id, date: new Date(Date.now() - 86400000).toISOString().split('T')[0], rotation_type: 'reading', response: 'Read System Design scaling: Horizontal scaling is easier when servers are stateless.', completed: true }
+];
+
 // Helper to seed localStorage
 const seedLocalStorage = () => {
   if (typeof window === 'undefined') return;
@@ -157,6 +194,12 @@ const seedLocalStorage = () => {
   seed('sharon_db_habits', MOCK_HABITS);
   seed('sharon_db_habit_logs', MOCK_HABIT_LOGS);
   seed('sharon_db_reviews', MOCK_REVIEWS);
+  seed('sharon_db_campaigns', MOCK_CAMPAIGNS);
+  seed('sharon_db_campaign_tasks', MOCK_CAMPAIGN_TASKS);
+  seed('sharon_db_seasons', MOCK_SEASONS);
+  seed('sharon_db_future_letters', MOCK_FUTURE_LETTERS);
+  seed('sharon_db_daily_check_ins', MOCK_DAILY_CHECKINS);
+  seed('sharon_db_intellectual_growth_logs', MOCK_INTELLECTUAL_LOGS);
 };
 
 // Seed storage immediately if in browser
