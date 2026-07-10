@@ -21,7 +21,8 @@ import {
   Search,
   Compass,
   Mail,
-  Settings
+  Settings,
+  Megaphone
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -42,6 +43,7 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
     { name: 'Journal', path: '/journal', icon: BookOpen },
     { name: 'Habits', path: '/habits', icon: CheckSquare },
     { name: 'Goals', path: '/goals', icon: Target },
+    { name: 'Campaigns', path: '/campaigns', icon: Megaphone },
     { name: 'Reviews', path: '/reviews', icon: ClipboardList },
     { name: 'Seasons', path: '/seasons', icon: Compass },
     { name: 'Future Letters', path: '/letters', icon: Mail }

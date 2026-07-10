@@ -589,6 +589,12 @@ export default function Dashboard() {
                     {campaignDaysRemaining} days remaining
                   </span>
                 </div>
+                <Link
+                  href="/campaigns"
+                  className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light uppercase tracking-wider mt-1"
+                >
+                  Manage Desk
+                </Link>
               </div>
 
               {/* Tasks list summary */}
