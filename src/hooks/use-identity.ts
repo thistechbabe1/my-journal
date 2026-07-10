@@ -41,8 +41,12 @@ export function useIdentity() {
   }, [user]);
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     fetchIdentityData();
-  }, [fetchIdentityData]);
+  }, [user, fetchIdentityData]);
 
   const updateProfile = async (updates: Partial<UserProfile>) => {
     if (!user) return { error: 'No authenticated user' };

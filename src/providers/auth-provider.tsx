@@ -69,15 +69,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return { error };
+      if (error) {
+        setLoading(false);
+        return { error };
+      }
       setSession(data.session);
       setUser(data.user);
       router.push('/');
       return { error: null };
     } catch (err: any) {
-      return { error: err.message || err };
-    } finally {
       setLoading(false);
+      return { error: err.message || err };
     }
   };
 
@@ -85,19 +87,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({ email, password });
-      if (error) return { error, session: null };
+      if (error) {
+        setLoading(false);
+        return { error, session: null };
+      }
       setSession(data.session);
       setUser(data.user);
       
       // If a session is established immediately (e.g. email confirmation disabled), redirect
       if (data.session) {
         router.push('/');
+      } else {
+        setLoading(false);
       }
       return { error: null, session: data.session };
     } catch (err: any) {
-      return { error: err.message || err, session: null };
-    } finally {
       setLoading(false);
+      return { error: err.message || err, session: null };
     }
   };
 

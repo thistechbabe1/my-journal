@@ -29,8 +29,12 @@ export function useCampaigns() {
   }, [user]);
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     fetchCampaigns();
-  }, [fetchCampaigns]);
+  }, [user, fetchCampaigns]);
 
   const activeCampaign = campaigns.find((c) => c.status === 'active') || null;
 

@@ -5,6 +5,8 @@ export interface UserProfile {
   bio: string | null;
   growth_score: number;
   updated_at: string;
+  gemini_api_key?: string | null;
+  voice_profile?: string | null;
 }
 
 export interface LifeArea {

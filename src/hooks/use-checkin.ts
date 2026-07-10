@@ -58,8 +58,12 @@ export function useCheckIn(date: string) {
   }, [user, date, getWeekRange]);
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     fetchCheckInData();
-  }, [fetchCheckInData]);
+  }, [user, fetchCheckInData]);
 
   const saveCheckIn = async (payload: Partial<DailyCheckIn>) => {
     if (!user) return { error: 'No authenticated user' };

@@ -22,6 +22,8 @@ const MOCK_PROFILE = {
   avatar_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150',
   bio: 'Living intentionally, learning daily, and building things that matter. Focus: Clarity, confidence, and discipline.',
   growth_score: 84,
+  gemini_api_key: 'mock-gemini-key',
+  voice_profile: 'Write in a natural, conversational, and direct tone.',
   updated_at: new Date().toISOString()
 };
 

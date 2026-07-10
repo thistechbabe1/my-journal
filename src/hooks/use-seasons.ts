@@ -27,8 +27,12 @@ export function useSeasons() {
   }, [user]);
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     fetchSeasons();
-  }, [fetchSeasons]);
+  }, [user, fetchSeasons]);
 
   const saveSeason = async (season: Partial<Season>) => {
     if (!user) return { error: 'No authenticated user' };

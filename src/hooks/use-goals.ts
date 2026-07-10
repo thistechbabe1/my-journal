@@ -28,8 +28,12 @@ export function useGoals() {
   }, [user]);
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     fetchGoalsData();
-  }, [fetchGoalsData]);
+  }, [user, fetchGoalsData]);
 
   const saveGoal = async (goal: Partial<Goal>, milestonesList?: string[]) => {
     if (!user) return { error: 'No authenticated user' };

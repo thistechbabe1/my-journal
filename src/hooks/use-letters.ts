@@ -27,8 +27,12 @@ export function useLetters() {
   }, [user]);
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     fetchLetters();
-  }, [fetchLetters]);
+  }, [user, fetchLetters]);
 
   const saveLetter = async (letter: Partial<FutureLetter>) => {
     if (!user) return { error: 'No authenticated user' };

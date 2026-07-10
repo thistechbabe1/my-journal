@@ -43,8 +43,12 @@ export function useJournal(filters?: {
   }, [user, filterString]);
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     fetchJournalData();
-  }, [fetchJournalData]);
+  }, [user, fetchJournalData]);
 
   const saveEntry = async (entry: Partial<JournalEntry>) => {
     if (!user) return { error: 'No authenticated user' };

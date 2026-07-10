@@ -28,8 +28,12 @@ export function useHabits(date: string) {
   }, [user, date]);
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     fetchHabitsData();
-  }, [fetchHabitsData]);
+  }, [user, fetchHabitsData]);
 
   const addHabit = async (name: string) => {
     if (!user) return { error: 'No authenticated user' };

@@ -8,6 +8,8 @@ CREATE TABLE profiles (
   avatar_url TEXT,
   bio TEXT,
   growth_score INT DEFAULT 10,
+  gemini_api_key TEXT,
+  voice_profile TEXT,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
 );
 

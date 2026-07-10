@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, Square, Loader2 } from 'lucide-react';
 import { useToast } from './ToastProvider';
+import { useIdentity } from '@/hooks/use-identity';
 
 interface VoiceRecorderProps {
   onTranscribe: (text: string) => void;
@@ -10,6 +11,7 @@ interface VoiceRecorderProps {
 
 export default function VoiceRecorder({ onTranscribe }: VoiceRecorderProps) {
   const { toast } = useToast();
+  const { profile } = useIdentity();
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -75,8 +77,8 @@ export default function VoiceRecorder({ onTranscribe }: VoiceRecorderProps) {
   };
 
   const handleAudioBlob = async (blob: Blob) => {
-    const apiKey = localStorage.getItem('sharon_gemini_key');
-    const voiceProfile = localStorage.getItem('sharon_voice_profile') || 'Write in a natural, conversational, and direct tone.';
+    const apiKey = profile?.gemini_api_key;
+    const voiceProfile = profile?.voice_profile || 'Write in a natural, conversational, and direct tone.';
 
     if (!apiKey) {
       toast('Please enter your Gemini API Key in Sanctuary Settings first.', 'warning');

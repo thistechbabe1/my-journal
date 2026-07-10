@@ -28,8 +28,12 @@ export function useReviews(periodType?: 'weekly' | 'monthly' | 'quarterly' | 'an
   }, [user, periodType]);
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     fetchReviewsData();
-  }, [fetchReviewsData]);
+  }, [user, fetchReviewsData]);
 
   const saveReview = async (review: Partial<Review>) => {
     if (!user) return { error: 'No authenticated user' };

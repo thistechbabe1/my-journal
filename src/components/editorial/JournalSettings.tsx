@@ -6,6 +6,8 @@ import { useToast } from '../feedback/ToastProvider';
 import ActionButton from './ActionButton';
 import FieldLabel from './FieldLabel';
 
+import { useIdentity } from '@/hooks/use-identity';
+
 interface JournalSettingsProps {
   isOpen: boolean;
   onClose: () => void;
@@ -13,23 +15,32 @@ interface JournalSettingsProps {
 
 export default function JournalSettings({ isOpen, onClose }: JournalSettingsProps) {
   const { toast } = useToast();
+  const { profile, updateProfile } = useIdentity();
   const [apiKey, setApiKey] = useState('');
   const [voiceProfile, setVoiceProfile] = useState('');
   const [showKey, setShowKey] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setApiKey(localStorage.getItem('sharon_gemini_key') || '');
-      setVoiceProfile(localStorage.getItem('sharon_voice_profile') || '');
+    if (profile) {
+      setApiKey(profile.gemini_api_key || '');
+      setVoiceProfile(profile.voice_profile || '');
     }
-  }, [isOpen]);
+  }, [profile, isOpen]);
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('sharon_gemini_key', apiKey.trim());
-      localStorage.setItem('sharon_voice_profile', voiceProfile.trim());
-      toast('Journal settings updated successfully.', 'success');
+    setSaving(true);
+    const { error } = await updateProfile({
+      gemini_api_key: apiKey.trim() || null,
+      voice_profile: voiceProfile.trim() || null
+    });
+    setSaving(false);
+
+    if (error) {
+      toast(`Error updating settings: ${error}`, 'error');
+    } else {
+      toast('Sanctuary settings updated successfully.', 'success');
       onClose();
     }
   };
