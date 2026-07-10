@@ -152,7 +152,7 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
           {!collapsed && (
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-xs truncate text-foreground">{profile?.name || 'Sharon'}</p>
-              <p className="text-[9px] font-bold text-sharon-muted tracking-wider uppercase mt-0.5">Sanctuary</p>
+              <p className="text-[9px] font-bold text-sharon-muted tracking-wider uppercase mt-0.5">Space</p>
             </div>
           )}
         </div>

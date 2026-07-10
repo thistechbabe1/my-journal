@@ -290,7 +290,7 @@ export default function Dashboard() {
     return (
       <div className="flex flex-col items-center justify-center py-24">
         <div className="w-5 h-5 border border-sharon-primary border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs font-semibold text-sharon-muted mt-4 font-sans">Opening dashboard sanctuary...</p>
+        <p className="text-xs font-semibold text-sharon-muted mt-4 font-sans">Opening your dashboard...</p>
       </div>
     );
   }
@@ -593,7 +593,7 @@ export default function Dashboard() {
 
               {/* Tasks list summary */}
               <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
-                {activeTasks.slice(0, 3).map((task) => (
+                {activeTasks.map((task) => (
                   <div key={task.id} className="flex items-center justify-between p-2 rounded bg-background border border-card-border/60 hover:border-sharon-primary/30 transition-all select-none">
                     <button
                       onClick={() => toggleTaskCompleted(task.id, !task.completed)}
@@ -625,11 +625,10 @@ export default function Dashboard() {
                 ))}
               </div>
 
-              {activeTasks.length > 3 && (
-                <div className="text-center pt-1 border-t border-card-border/30">
-                  <span className="text-[9px] text-sharon-muted font-bold tracking-wide uppercase">
-                    and {activeTasks.length - 3} other items in pipeline
-                  </span>
+              {activeTasks.length > 0 && (
+                <div className="text-center pt-2.5 border-t border-card-border/30 flex justify-between items-center text-[9px] text-sharon-muted font-bold tracking-wide uppercase select-none">
+                  <span>Pipeline Checklist</span>
+                  <span>{activeTasks.filter((t) => t.completed).length} / {activeTasks.length} Completed</span>
                 </div>
               )}
             </div>

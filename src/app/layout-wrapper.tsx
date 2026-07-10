@@ -32,7 +32,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         <div className="flex flex-col items-center gap-3">
           <span className="font-serif text-3xl font-light tracking-wide text-foreground">Sharon</span>
           <span className="text-[10px] uppercase tracking-widest text-sharon-muted font-bold tracking-widest animate-pulse">
-            Sanctuary is preparing
+            Preparing your space
           </span>
         </div>
       </div>

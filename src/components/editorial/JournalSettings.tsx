@@ -40,7 +40,7 @@ export default function JournalSettings({ isOpen, onClose }: JournalSettingsProp
     if (error) {
       toast(`Error updating settings: ${error}`, 'error');
     } else {
-      toast('Sanctuary settings updated successfully.', 'success');
+      toast('Preferences updated successfully.', 'success');
       onClose();
     }
   };
@@ -54,7 +54,7 @@ export default function JournalSettings({ isOpen, onClose }: JournalSettingsProp
         <div className="flex items-center justify-between border-b border-card-border pb-3">
           <div className="flex items-center gap-2">
             <Sparkles size={16} className="text-sharon-primary" />
-            <h3 className="font-serif text-lg font-medium text-foreground">Sanctuary AI Settings</h3>
+            <h3 className="font-serif text-lg font-medium text-foreground">AI & Writing Settings</h3>
           </div>
           <button
             type="button"

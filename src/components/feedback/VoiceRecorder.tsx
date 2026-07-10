@@ -81,7 +81,7 @@ export default function VoiceRecorder({ onTranscribe }: VoiceRecorderProps) {
     const voiceProfile = profile?.voice_profile || 'Write in a natural, conversational, and direct tone.';
 
     if (!apiKey) {
-      toast('Please enter your Gemini API Key in Sanctuary Settings first.', 'warning');
+      toast('Please enter your Gemini API Key in Settings first.', 'warning');
       return;
     }
 
