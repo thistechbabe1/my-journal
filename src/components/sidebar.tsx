@@ -7,22 +7,18 @@ import { useAuth } from '@/providers/auth-provider';
 import { useTheme } from '@/providers/theme-provider';
 import { useIdentity } from '@/hooks/use-identity';
 import {
-  LayoutDashboard,
-  User,
+  Calendar,
   BookOpen,
-  CheckSquare,
-  Target,
-  ClipboardList,
+  Leaf,
+  Compass,
+  Library,
   LogOut,
   Sun,
   Moon,
   ChevronLeft,
   ChevronRight,
   Search,
-  Compass,
-  Mail,
-  Settings,
-  Megaphone
+  Settings
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -38,15 +34,11 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
   const [collapsed, setCollapsed] = useState(false);
 
   const navItems = [
-    { name: 'Dashboard', path: '/', icon: LayoutDashboard },
-    { name: 'Identity', path: '/identity', icon: User },
+    { name: 'Today', path: '/', icon: Calendar },
     { name: 'Journal', path: '/journal', icon: BookOpen },
-    { name: 'Habits', path: '/habits', icon: CheckSquare },
-    { name: 'Goals', path: '/goals', icon: Target },
-    { name: 'Campaigns', path: '/campaigns', icon: Megaphone },
-    { name: 'Reviews', path: '/reviews', icon: ClipboardList },
-    { name: 'Seasons', path: '/seasons', icon: Compass },
-    { name: 'Future Letters', path: '/letters', icon: Mail }
+    { name: 'Growth', path: '/growth', icon: Leaf },
+    { name: 'Identity', path: '/identity', icon: Compass },
+    { name: 'Library', path: '/library', icon: Library }
   ];
 
   return (
