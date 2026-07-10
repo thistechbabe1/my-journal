@@ -110,7 +110,7 @@ export default function RegisterPage() {
               <div className="space-y-4 text-left">
                 {/* Email Address */}
                 <div className="space-y-1.5">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-sharon-muted">Email Address</label>
+                  <label className="text-[11px] font-bold uppercase tracking-widest text-sharon-muted">Email Address</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sharon-muted">
                       <Mail size={14} />
@@ -128,7 +128,7 @@ export default function RegisterPage() {
 
                 {/* Password */}
                 <div className="space-y-1.5">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-sharon-muted">Password</label>
+                  <label className="text-[11px] font-bold uppercase tracking-widest text-sharon-muted">Password</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sharon-muted">
                       <Lock size={14} />
@@ -153,7 +153,7 @@ export default function RegisterPage() {
 
                 {/* Confirm Password */}
                 <div className="space-y-1.5">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-sharon-muted">Confirm Password</label>
+                  <label className="text-[11px] font-bold uppercase tracking-widest text-sharon-muted">Confirm Password</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sharon-muted">
                       <Lock size={14} />
