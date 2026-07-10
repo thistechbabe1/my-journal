@@ -20,7 +20,8 @@ import {
   ChevronRight,
   Search,
   Compass,
-  Mail
+  Mail,
+  Settings
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -160,6 +161,7 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
         <div className={`flex items-center justify-between gap-1.5 ${collapsed ? 'flex-col' : ''}`}>
           {/* Theme Switcher */}
           <button
+            type="button"
             onClick={toggleTheme}
             className="p-2 rounded-lg text-sharon-muted hover:text-foreground hover:bg-sharon-muted-light/40 transition-all cursor-pointer"
             title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
@@ -167,8 +169,19 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
+          {/* Sanctuary Settings */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('open-settings'))}
+            className="p-2 rounded-lg text-sharon-muted hover:text-foreground hover:bg-sharon-muted-light/40 transition-all cursor-pointer"
+            title="Sanctuary Settings"
+          >
+            <Settings size={16} />
+          </button>
+
           {/* Sign Out */}
           <button
+            type="button"
             onClick={signOut}
             className={`p-2 rounded-lg text-sharon-muted hover:text-danger hover:bg-red-500/5 transition-all cursor-pointer flex items-center gap-2 ${
               collapsed ? '' : 'flex-1 justify-center'

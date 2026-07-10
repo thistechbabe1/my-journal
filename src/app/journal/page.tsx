@@ -24,7 +24,6 @@ import {
 } from '@/components/editorial';
 import { useToast } from '@/components/feedback/ToastProvider';
 import ConfirmationModal from '@/components/feedback/ConfirmationModal';
-import JournalSettings from '@/components/editorial/JournalSettings';
 import VoiceRecorder from '@/components/feedback/VoiceRecorder';
 
 export default function JournalPage() {
@@ -71,7 +70,6 @@ export default function JournalPage() {
   // Modal feedback state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const handleApplyTemplate = (type: string) => {
     if (!type) return;
@@ -476,7 +474,7 @@ export default function JournalPage() {
                   <VoiceRecorder onTranscribe={handleVoiceTranscribe} />
                   <button
                     type="button"
-                    onClick={() => setIsSettingsOpen(true)}
+                    onClick={() => window.dispatchEvent(new CustomEvent('open-settings'))}
                     className="flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-card-border bg-card text-sharon-muted hover:text-foreground hover:bg-sharon-muted-light/60 text-[10px] font-bold uppercase tracking-wider cursor-pointer transition-all"
                   >
                     <Settings size={11} />
@@ -650,11 +648,6 @@ export default function JournalPage() {
           setIsDeleteModalOpen(false);
           setDeleteTargetId(null);
         }}
-      />
-
-      <JournalSettings
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
       />
     </div>
   );

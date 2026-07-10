@@ -5,16 +5,25 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import Sidebar from '@/components/sidebar';
 import CommandPalette from '@/components/command-palette';
+import JournalSettings from '@/components/editorial/JournalSettings';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user, loading } = useAuth();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Close mobile sidebar on route change
   useEffect(() => {
     setMobileSidebarOpen(false);
   }, [pathname]);
+
+  // Listen to global open-settings trigger
+  useEffect(() => {
+    const handleOpen = () => setIsSettingsOpen(true);
+    window.addEventListener('open-settings', handleOpen);
+    return () => window.removeEventListener('open-settings', handleOpen);
+  }, []);
 
   // Clean, editorial loading screen
   if (loading) {
@@ -83,6 +92,9 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
       {/* Command search palette */}
       <CommandPalette />
+
+      {/* Sanctuary Settings global modal */}
+      <JournalSettings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </div>
   );
 }
