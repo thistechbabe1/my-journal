@@ -18,8 +18,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Search,
-  Settings
+  Settings,
+  CheckSquare,
+  Users
 } from 'lucide-react';
+import { NotificationCenter } from '@/components/notifications/notification-center';
 
 interface SidebarProps {
   mobileOpen?: boolean;
@@ -34,11 +37,14 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
   const [collapsed, setCollapsed] = useState(false);
 
   const navItems = [
-    { name: 'Today', path: '/', icon: Calendar },
-    { name: 'Journal', path: '/journal', icon: BookOpen },
-    { name: 'Growth', path: '/growth', icon: Leaf },
+    { name: 'Today',    path: '/',         icon: Sun },
+    { name: 'Calendar', path: '/calendar',  icon: Calendar },
+    { name: 'Tasks',    path: '/tasks',    icon: CheckSquare },
+    { name: 'People',   path: '/people',   icon: Users },
+    { name: 'Journal',  path: '/journal',  icon: BookOpen },
+    { name: 'Growth',   path: '/growth',   icon: Leaf },
     { name: 'Identity', path: '/identity', icon: Compass },
-    { name: 'Library', path: '/library', icon: Library }
+    { name: 'Library',  path: '/library',  icon: Library }
   ];
 
   return (
@@ -67,7 +73,7 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
             </div>
             {!collapsed && (
               <div className="flex flex-col">
-                <span className="font-serif font-bold text-lg tracking-wide text-foreground">
+                <span className="font-serif font-bold text-lg text-foreground">
                   Sharon
                 </span>
               </div>
@@ -78,7 +84,7 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
           {setMobileOpen && (
             <button
               onClick={() => setMobileOpen(false)}
-              className="md:hidden p-1 rounded-lg text-sharon-muted hover:text-foreground cursor-pointer hover:bg-sharon-muted-light/60 transition-colors"
+              className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg text-sharon-muted hover:text-foreground cursor-pointer hover:bg-sharon-muted-light/60 transition-colors"
               aria-label="Close navigation"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -93,10 +99,10 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
           <div className="px-4 mb-5">
             <button
               onClick={() => window.dispatchEvent(new CustomEvent('toggle-search'))}
-              className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-sharon-muted border border-card-border rounded-lg hover:bg-sharon-muted-light/40 transition-all cursor-pointer"
+              className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2 text-xs text-sharon-muted border border-card-border rounded-lg hover:bg-sharon-muted-light/40 transition-all cursor-pointer"
             >
               <div className="flex items-center gap-2">
-                <Search size={13} />
+                <Search size={14} />
                 <span>Search...</span>
               </div>
               <kbd className="px-1.5 py-0.5 text-[9px] bg-card border border-card-border rounded text-sharon-muted">
@@ -107,7 +113,7 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
         )}
 
         {/* Navigation Items */}
-        <nav className="flex-1 space-y-1 px-3">
+        <nav className="flex-1 space-y-1.5 px-3">
           {navItems.map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
@@ -116,7 +122,7 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
               <Link
                 key={item.path}
                 href={item.path}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm transition-all relative ${
+                className={`flex items-center gap-3 px-3.5 py-2.5 min-h-[44px] rounded-lg font-medium text-sm transition-all relative ${
                   isActive
                     ? 'text-sharon-primary bg-sharon-muted-light/50 font-semibold'
                     : 'text-sharon-muted hover:text-foreground hover:bg-sharon-muted-light/30'
@@ -126,7 +132,7 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
                 <Icon size={16} className={isActive ? 'text-sharon-primary' : 'text-sharon-muted'} />
                 {!collapsed && <span>{item.name}</span>}
                 {isActive && !collapsed && (
-                  <div className="absolute right-3 w-1 h-1 rounded-full bg-sharon-primary-light" />
+                  <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-sharon-primary" />
                 )}
               </Link>
             );
@@ -146,18 +152,21 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
           {!collapsed && (
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-xs truncate text-foreground">{profile?.name || 'Sharon'}</p>
-              <p className="text-[9px] font-bold text-sharon-muted tracking-wider uppercase mt-0.5">Space</p>
+              <p className="text-[9px] font-bold text-sharon-muted mt-0.5">Space</p>
             </div>
           )}
         </div>
 
         {/* Toolbar Controls */}
         <div className={`flex items-center justify-between gap-1.5 ${collapsed ? 'flex-col' : ''}`}>
+          {/* Notification Center */}
+          <NotificationCenter />
+
           {/* Theme Switcher */}
           <button
             type="button"
             onClick={toggleTheme}
-            className="p-2 rounded-lg text-sharon-muted hover:text-foreground hover:bg-sharon-muted-light/40 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg text-sharon-muted hover:text-foreground hover:bg-sharon-muted-light/40 transition-all cursor-pointer"
             title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
           >
             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
@@ -167,7 +176,7 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
           <button
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent('open-settings'))}
-            className="p-2 rounded-lg text-sharon-muted hover:text-foreground hover:bg-sharon-muted-light/40 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg text-sharon-muted hover:text-foreground hover:bg-sharon-muted-light/40 transition-all cursor-pointer"
             title="Sanctuary Settings"
           >
             <Settings size={16} />
@@ -177,8 +186,8 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen }: SidebarPr
           <button
             type="button"
             onClick={signOut}
-            className={`p-2 rounded-lg text-sharon-muted hover:text-danger hover:bg-red-500/5 transition-all cursor-pointer flex items-center gap-2 ${
-              collapsed ? '' : 'flex-1 justify-center'
+            className={`min-h-[44px] p-2 rounded-lg text-sharon-muted hover:text-danger hover:bg-red-500/5 transition-all cursor-pointer flex items-center justify-center gap-2 ${
+              collapsed ? 'w-[44px]' : 'flex-1'
             }`}
             title="Log Out"
           >

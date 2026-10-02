@@ -39,7 +39,7 @@ export default function Toast({ id, message, type, onClose }: ToastProps) {
       className={`flex items-center gap-3 px-4 py-3 rounded-lg border shadow-sm max-w-sm w-full animate-fade-in font-sans text-xs ${styles[type]}`}
     >
       {icons[type]}
-      <span className="flex-1 font-medium tracking-wide">{message}</span>
+      <span className="flex-1 font-medium ">{message}</span>
       <button
         onClick={() => onClose(id)}
         className="text-sharon-muted hover:text-foreground transition-colors p-0.5 rounded cursor-pointer"

@@ -69,10 +69,10 @@ export default function GrowthHub() {
       
       {/* Header */}
       <div className="space-y-1">
-        <span className="text-[10px] font-bold text-sharon-primary uppercase tracking-widest bg-sharon-primary/10 border border-sharon-primary/20 px-2 py-0.5 rounded">
+        <span className="text-[10px] font-bold text-sharon-primary bg-sharon-primary/10 border border-sharon-primary/20 px-2 py-0.5 rounded">
           Active Development
         </span>
-        <h1 className="text-3xl sm:text-4xl font-serif font-light text-foreground tracking-wide mt-2">
+        <h1 className="text-3xl sm:text-4xl font-serif font-light text-foreground mt-2">
           Growth Workspace
         </h1>
         <p className="text-xs text-sharon-muted mt-1.5 font-sans">
@@ -86,7 +86,7 @@ export default function GrowthHub() {
       <div className="space-y-8">
         {categories.map((cat, idx) => (
           <div key={idx} className="space-y-3">
-            <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block border-b border-card-border/10 pb-1.5">
+            <span className="text-[10px] font-bold text-sharon-muted block border-b border-card-border/10 pb-1.5">
               {cat.group}
             </span>
             

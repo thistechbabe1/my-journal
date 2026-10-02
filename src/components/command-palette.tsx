@@ -13,6 +13,9 @@ import {
   ClipboardList,
   Compass,
   CornerDownLeft,
+  CheckSquare,
+  Calendar,
+  Users,
   X
 } from 'lucide-react';
 
@@ -20,7 +23,7 @@ interface SearchResult {
   id: string;
   title: string;
   subtitle: string;
-  category: 'Journal' | 'Goal' | 'Review' | 'Identity' | 'Navigation';
+  category: 'Journal' | 'Goal' | 'Task' | 'Event' | 'Person' | 'Review' | 'Identity' | 'Navigation';
   url: string;
 }
 
@@ -97,7 +100,8 @@ export default function CommandPalette() {
     } else if (e.key === 'Enter') {
       e.preventDefault();
       if (results[selectedIndex]) {
-        handleSelect(results[selectedIndex]);
+        router.push(results[selectedIndex].url);
+        setIsOpen(false);
       }
     }
   };
@@ -113,12 +117,15 @@ export default function CommandPalette() {
 
     // Static Navigation Results
     const staticNavs: SearchResult[] = [
-      { id: 'nav-dash', title: 'Dashboard', subtitle: 'View daily priorities, life wheel & habits', category: 'Navigation', url: '/' },
-      { id: 'nav-ident', title: 'Identity Hub', subtitle: 'Reflect on core values, traits & legacy', category: 'Identity', url: '/identity' },
-      { id: 'nav-jour', title: 'Daily Journal', subtitle: 'Write journal entries and view history', category: 'Journal', url: '/journal' },
-      { id: 'nav-goal', title: 'Goals & Vision', subtitle: 'Manage categories and milestones', category: 'Goal', url: '/goals' },
-      { id: 'nav-rev', title: 'Reviews', subtitle: 'Weekly, monthly, quarterly & annual reflection', category: 'Review', url: '/reviews' },
-      { id: 'nav-hab', title: 'Habits Tracker', subtitle: 'Log daily completions & streaks', category: 'Navigation', url: '/habits' }
+      { id: 'nav-dash',   title: 'Dashboard',         subtitle: 'View daily priorities, life wheel & habits',      category: 'Navigation', url: '/' },
+      { id: 'nav-cal',    title: 'Calendar',           subtitle: 'View schedule, appointments & events',            category: 'Navigation', url: '/calendar' },
+      { id: 'nav-tasks',  title: 'Tasks',              subtitle: 'View and manage all your tasks',                  category: 'Navigation', url: '/tasks' },
+      { id: 'nav-people', title: 'People & Follow-ups',subtitle: 'Personal secretary CRM & contacts',               category: 'Navigation', url: '/people' },
+      { id: 'nav-ident',  title: 'Identity Hub',       subtitle: 'Reflect on core values, traits & legacy',         category: 'Identity',   url: '/identity' },
+      { id: 'nav-jour',   title: 'Daily Journal',      subtitle: 'Write journal entries and view history',           category: 'Journal',    url: '/journal' },
+      { id: 'nav-goal',   title: 'Goals & Vision',     subtitle: 'Manage categories and milestones',                category: 'Goal',       url: '/goals' },
+      { id: 'nav-rev',    title: 'Reviews',            subtitle: 'Weekly, monthly, quarterly & annual reflection',   category: 'Review',     url: '/reviews' },
+      { id: 'nav-hab',    title: 'Habits Tracker',     subtitle: 'Log daily completions & streaks',                 category: 'Navigation', url: '/habits' }
     ];
 
     if (!searchTerm.trim()) {
@@ -153,13 +160,62 @@ export default function CommandPalette() {
           url: '/goals'
         }));
 
-      // 3. Filter Navigations
+      // 3. Fetch tasks
+      const { data: tasks } = await supabase.from('tasks').select('*').eq('user_id', user.id);
+      const taskResults: SearchResult[] = (tasks || [])
+        .filter((t: any) =>
+          t.title.toLowerCase().includes(term) ||
+          (t.notes && t.notes.toLowerCase().includes(term))
+        )
+        .map((t: any) => ({
+          id: t.id,
+          title: t.title,
+          subtitle: `${t.status === 'complete' ? '✓ Completed' : t.due_date ? `Due: ${t.due_date}` : 'No date'} · ${t.priority} priority`,
+          category: 'Task' as const,
+          url: `/tasks?focus=${t.id}`
+        }));
+
+      // 4. Fetch events
+      const { data: events } = await supabase.from('events').select('*').eq('user_id', user.id);
+      const eventResults: SearchResult[] = (events || [])
+        .filter((e: any) =>
+          e.title.toLowerCase().includes(term) ||
+          (e.location && e.location.toLowerCase().includes(term)) ||
+          (e.description && e.description.toLowerCase().includes(term))
+        )
+        .map((e: any) => ({
+          id: e.id,
+          title: `Event: ${e.title}`,
+          subtitle: `Date: ${e.event_date}${e.is_all_day ? ' (All Day)' : e.start_time ? ` at ${e.start_time.substring(0, 5)}` : ''}${e.location ? ` @ ${e.location}` : ''}`,
+          category: 'Event' as const,
+          url: `/calendar?date=${e.event_date}`
+        }));
+
+      // 5. Fetch people / relationships
+      const { data: people } = await supabase.from('relationships').select('*').eq('user_id', user.id);
+      const peopleResults: SearchResult[] = (people || [])
+        .filter((p: any) =>
+          p.name.toLowerCase().includes(term) ||
+          (p.type && p.type.toLowerCase().includes(term)) ||
+          (p.context && p.context.toLowerCase().includes(term)) ||
+          (p.next_action && p.next_action.toLowerCase().includes(term)) ||
+          (p.waiting_on && p.waiting_on.toLowerCase().includes(term))
+        )
+        .map((p: any) => ({
+          id: p.id,
+          title: `Person: ${p.name}`,
+          subtitle: `${p.type || 'Contact'}${p.next_action ? ` · Action: ${p.next_action}` : ''}`,
+          category: 'Person' as const,
+          url: `/people`
+        }));
+
+      // 6. Filter navigations
       const filteredNavs = staticNavs.filter(
         (n) => n.title.toLowerCase().includes(term) || n.subtitle.toLowerCase().includes(term)
       );
 
       // Merge and limit
-      const merged = [...filteredNavs, ...goalResults, ...journalResults].slice(0, 8);
+      const merged = [...filteredNavs, ...peopleResults, ...eventResults, ...taskResults, ...goalResults, ...journalResults].slice(0, 8);
       setResults(merged);
       setSelectedIndex(0);
     } catch (err) {
@@ -177,10 +233,16 @@ export default function CommandPalette() {
         return <BookOpen size={16} className="text-sharon-primary" />;
       case 'Goal':
         return <Target size={16} className="text-sharon-accent-dark dark:text-sharon-accent" />;
+      case 'Task':
+        return <CheckSquare size={16} className="text-sharon-primary" />;
+      case 'Event':
+        return <Calendar size={16} className="text-sharon-primary" />;
+      case 'Person':
+        return <Users size={16} className="text-sharon-primary" />;
       case 'Review':
         return <ClipboardList size={16} className="text-blue-500" />;
       case 'Identity':
-        return <User size={16} className="text-emerald-500" />;
+        return <User size={16} className="text-sharon-primary" />;
       default:
         return <Compass size={16} className="text-sharon-muted" />;
     }
@@ -255,7 +317,7 @@ export default function CommandPalette() {
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <span className="text-[9px] font-bold tracking-wider uppercase bg-sharon-muted-light px-2 py-0.5 rounded text-sharon-muted border border-card-border">
+                        <span className="text-[9px] font-bold bg-sharon-muted-light px-2 py-0.5 rounded text-sharon-muted border border-card-border">
                           {item.category}
                         </span>
                         {isSelected && (

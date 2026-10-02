@@ -18,7 +18,7 @@ export default function NotificationBar({
 }: NotificationBarProps) {
   return (
     <div className="bg-sharon-accent text-white font-sans text-xs py-2 px-4 flex items-center justify-between gap-4 select-none">
-      <div className="flex-1 text-center font-medium tracking-wide">
+      <div className="flex-1 text-center font-medium ">
         <span>{message}</span>
         {actionText && onAction && (
           <button

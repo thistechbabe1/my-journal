@@ -8,7 +8,7 @@ export const identityService = {
       .from('personal_identity')
       .select('*')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
     return { data, error };
   },
 
@@ -20,13 +20,15 @@ export const identityService = {
         .from('personal_identity')
         .update(identity)
         .eq('user_id', userId)
-        .single();
+        .select('*')
+        .maybeSingle();
       return { data, error };
     } else {
       const { data, error } = await supabase
         .from('personal_identity')
         .insert({ user_id: userId, ...identity })
-        .single();
+        .select('*')
+        .maybeSingle();
       return { data, error };
     }
   },
@@ -48,7 +50,7 @@ export const identityService = {
       .select('*')
       .eq('user_id', userId)
       .eq('name', name)
-      .single();
+      .maybeSingle();
 
     if (existing) {
       const { data, error } = await supabase
@@ -56,13 +58,15 @@ export const identityService = {
         .update({ score, notes })
         .eq('user_id', userId)
         .eq('name', name)
-        .single();
+        .select('*')
+        .maybeSingle();
       return { data, error };
     } else {
       const { data, error } = await supabase
         .from('life_areas')
         .insert({ user_id: userId, name, score, notes })
-        .single();
+        .select('*')
+        .maybeSingle();
       return { data, error };
     }
   }

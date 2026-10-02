@@ -7,9 +7,10 @@ import { useToast } from '@/components/feedback/ToastProvider';
 import ConfirmationModal from '@/components/feedback/ConfirmationModal';
 import Link from 'next/link';
 import { Divider } from '@/components/editorial';
+import { getLocalDateStr } from '@/lib/date-utils';
 
 export default function HabitsPage() {
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = getLocalDateStr();
   const [selectedDate, setSelectedDate] = useState(todayStr);
   const [newHabitName, setNewHabitName] = useState('');
   const [saving, setSaving] = useState(false);
@@ -22,6 +23,7 @@ export default function HabitsPage() {
   const {
     habits,
     loading,
+    error,
     addHabit,
     deleteHabit,
     toggleHabit
@@ -67,9 +69,11 @@ export default function HabitsPage() {
   // Helper: Generate calendar blocks for the last 30 days
   const getLast30Days = () => {
     const list = [];
+    const now = new Date();
     for (let i = 29; i >= 0; i--) {
-      const d = new Date(Date.now() - i * 86400000);
-      list.push(d.toISOString().split('T')[0]);
+      const d = new Date(now);
+      d.setDate(now.getDate() - i);
+      list.push(getLocalDateStr(d));
     }
     return list;
   };
@@ -89,12 +93,12 @@ export default function HabitsPage() {
         <div>
           <Link
             href="/growth"
-            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light uppercase tracking-wider flex items-center gap-1 mb-2"
+            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light flex items-center gap-1 mb-2"
           >
             <ArrowLeft size={10} />
             <span>Growth Hub</span>
           </Link>
-          <h1 className="text-4xl font-serif font-light tracking-wide text-foreground">
+          <h1 className="text-4xl font-serif font-light text-foreground">
             Daily Rhythms
           </h1>
           <p className="text-xs text-sharon-muted mt-1.5">

@@ -97,7 +97,7 @@ export default function IdentityPage() {
     return (
       <div className="flex flex-col items-center justify-center py-32 font-sans">
         <div className="w-5 h-5 border border-sharon-primary border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs font-semibold text-sharon-muted mt-4 tracking-wide">Opening Manifesto...</p>
+        <p className="text-xs font-semibold text-sharon-muted mt-4 ">Opening Manifesto...</p>
       </div>
     );
   }
@@ -108,7 +108,7 @@ export default function IdentityPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-card-border/60 pb-6 text-left">
         <div>
-          <h1 className="text-4xl font-serif font-light tracking-wide text-foreground">
+          <h1 className="text-4xl font-serif font-light text-foreground">
             Identity
           </h1>
           <p className="text-xs text-sharon-muted mt-1.5 font-sans">
@@ -136,7 +136,7 @@ export default function IdentityPage() {
 
       {/* 1. Mission Statement */}
       <div className="space-y-4">
-        <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">
+        <span className="text-[10px] font-bold text-sharon-muted block">
           Mission Statement
         </span>
         <textarea
@@ -153,7 +153,7 @@ export default function IdentityPage() {
 
       {/* 2. Core Values */}
       <div className="space-y-4">
-        <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">
+        <span className="text-[10px] font-bold text-sharon-muted block">
           Core Values
         </span>
         <div className="flex flex-wrap gap-2">
@@ -189,7 +189,7 @@ export default function IdentityPage() {
 
       {/* 3. Core Principles */}
       <div className="space-y-4">
-        <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">
+        <span className="text-[10px] font-bold text-sharon-muted block">
           Life Principles & Constitution
         </span>
         
@@ -238,7 +238,7 @@ export default function IdentityPage() {
 
       {/* 4. Non-Negotiables */}
       <div className="space-y-4">
-        <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">
+        <span className="text-[10px] font-bold text-sharon-muted block">
           Non-Negotiables
         </span>
         <div className="space-y-3 pl-1">
@@ -289,7 +289,7 @@ export default function IdentityPage() {
         
         {/* Personality description */}
         <div className="space-y-2">
-          <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Personality Configuration</span>
+          <span className="text-[10px] font-bold text-sharon-muted block">Personality Configuration</span>
           <textarea
             placeholder="Describe your character profile, cognitive focus, MBTI, etc..."
             rows={4}
@@ -302,7 +302,7 @@ export default function IdentityPage() {
 
         {/* Core Convictions */}
         <div className="space-y-2">
-          <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Core Beliefs & Convictions</span>
+          <span className="text-[10px] font-bold text-sharon-muted block">Core Beliefs & Convictions</span>
           <textarea
             placeholder="What deep values or paradigms direct your standard of living?"
             rows={4}
@@ -315,7 +315,7 @@ export default function IdentityPage() {
 
         {/* Future Self Vision */}
         <div className="space-y-2">
-          <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Future Self Vision (Legacy)</span>
+          <span className="text-[10px] font-bold text-sharon-muted block">Future Self Vision (Legacy)</span>
           <textarea
             placeholder="Describe where your character is leading. Who will you be in 10 years?"
             rows={4}

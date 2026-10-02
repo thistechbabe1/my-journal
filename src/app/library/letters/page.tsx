@@ -103,12 +103,12 @@ export default function LettersPage() {
         <div>
           <Link
             href="/library"
-            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light uppercase tracking-wider flex items-center gap-1 mb-2"
+            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light flex items-center gap-1 mb-2"
           >
             <ArrowLeft size={10} />
             <span>Library Vault</span>
           </Link>
-          <h1 className="text-4xl font-serif font-light tracking-wide text-foreground">
+          <h1 className="text-4xl font-serif font-light text-foreground">
             Letters Capsule
           </h1>
           <p className="text-xs text-sharon-muted mt-1.5">
@@ -178,7 +178,7 @@ export default function LettersPage() {
             <form onSubmit={handleSaveLetter} className="space-y-6 max-w-xl">
               <div className="flex items-center justify-between border-b border-card-border/20 pb-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest">Target Month</span>
+                  <span className="text-[10px] font-bold text-sharon-muted ">Target Month</span>
                   <input
                     type="month"
                     value={selectedMonth}
@@ -268,7 +268,7 @@ export default function LettersPage() {
             <div className="space-y-6">
               <div className="flex justify-between items-center border-b border-card-border/20 pb-4">
                 <div>
-                  <span className="text-[9px] font-bold text-sharon-primary bg-sharon-primary/10 border border-sharon-primary/20 px-2.5 py-0.5 rounded uppercase tracking-wider">
+                  <span className="text-[9px] font-bold text-sharon-primary bg-sharon-primary/10 border border-sharon-primary/20 px-2.5 py-0.5 rounded ">
                     Capsule unlocked
                   </span>
                   <h3 className="font-serif text-2xl font-light text-foreground mt-2">
@@ -286,7 +286,7 @@ export default function LettersPage() {
               <div className="space-y-6">
                 {activeLetter.becoming_woman && (
                   <div className="space-y-1.5 text-left pl-3 border-l-2 border-sharon-primary/30">
-                    <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block font-sans">Becoming the woman I want to be</span>
+                    <span className="text-[10px] font-bold text-sharon-muted block font-sans">Becoming the woman I want to be</span>
                     <p className="text-sm font-serif italic text-foreground/90 leading-relaxed">
                       {activeLetter.becoming_woman}
                     </p>
@@ -295,7 +295,7 @@ export default function LettersPage() {
 
                 {activeLetter.habits_built && (
                   <div className="space-y-1.5 text-left pl-3 border-l-2 border-sharon-primary/30">
-                    <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block font-sans">Habits built this month</span>
+                    <span className="text-[10px] font-bold text-sharon-muted block font-sans">Habits built this month</span>
                     <p className="text-sm font-serif italic text-foreground/90 leading-relaxed">
                       {activeLetter.habits_built}
                     </p>
@@ -304,7 +304,7 @@ export default function LettersPage() {
 
                 {activeLetter.fears_smaller && (
                   <div className="space-y-1.5 text-left pl-3 border-l-2 border-sharon-primary/30">
-                    <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block font-sans">Fears made smaller</span>
+                    <span className="text-[10px] font-bold text-sharon-muted block font-sans">Fears made smaller</span>
                     <p className="text-sm font-serif italic text-foreground/90 leading-relaxed">
                       {activeLetter.fears_smaller}
                     </p>
@@ -313,7 +313,7 @@ export default function LettersPage() {
 
                 {activeLetter.relationships_grown && (
                   <div className="space-y-1.5 text-left pl-3 border-l-2 border-sharon-primary/30">
-                    <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block font-sans">Relational connections grown</span>
+                    <span className="text-[10px] font-bold text-sharon-muted block font-sans">Relational connections grown</span>
                     <p className="text-sm font-serif italic text-foreground/90 leading-relaxed">
                       {activeLetter.relationships_grown}
                     </p>
@@ -322,7 +322,7 @@ export default function LettersPage() {
 
                 {activeLetter.future_thanks && (
                   <div className="space-y-1.5 text-left pl-3 border-l-2 border-sharon-accent/30">
-                    <span className="text-[10px] font-bold text-sharon-accent uppercase tracking-widest block font-sans">My future self will thank me for</span>
+                    <span className="text-[10px] font-bold text-sharon-accent block font-sans">My future self will thank me for</span>
                     <p className="text-sm font-serif italic text-foreground/90 leading-relaxed">
                       {activeLetter.future_thanks}
                     </p>

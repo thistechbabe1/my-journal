@@ -506,3 +506,51 @@ CREATE TABLE future_letters (
 ALTER TABLE future_letters ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can manage their own future letters" ON future_letters 
   FOR ALL USING (auth.uid() = user_id);
+
+-- TASKS
+CREATE TABLE tasks (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL,
+  title TEXT NOT NULL,
+  notes TEXT,
+  due_date DATE,
+  priority TEXT CHECK (priority IN ('high', 'medium', 'low')) DEFAULT 'medium',
+  status TEXT CHECK (status IN ('active', 'complete')) DEFAULT 'active',
+  life_area_id UUID REFERENCES life_areas(id) ON DELETE SET NULL,
+  goal_id UUID REFERENCES goals(id) ON DELETE SET NULL,
+  completed_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
+ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can manage their own tasks" ON tasks
+  FOR ALL USING (auth.uid() = user_id);
+
+CREATE INDEX tasks_user_due_date ON tasks(user_id, due_date);
+CREATE INDEX tasks_user_status ON tasks(user_id, status);
+
+-- EVENTS / CALENDAR
+CREATE TABLE events (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  event_date DATE NOT NULL,
+  start_time TIME,
+  end_time TIME,
+  is_all_day BOOLEAN DEFAULT false,
+  location TEXT,
+  category TEXT CHECK (category IN ('meeting', 'appointment', 'church', 'personal', 'deadline', 'other')) DEFAULT 'personal',
+  life_area_id UUID REFERENCES life_areas(id) ON DELETE SET NULL,
+  goal_id UUID REFERENCES goals(id) ON DELETE SET NULL,
+  status TEXT CHECK (status IN ('scheduled', 'completed', 'cancelled')) DEFAULT 'scheduled',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
+ALTER TABLE events ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can manage their own events" ON events
+  FOR ALL USING (auth.uid() = user_id);
+
+CREATE INDEX events_user_date ON events(user_id, event_date);
+CREATE INDEX events_user_status ON events(user_id, status);

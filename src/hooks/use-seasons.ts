@@ -69,10 +69,27 @@ export function useSeasons() {
   const activeSeason = seasons.find((s) => s.status === 'active') || null;
   const archivedSeasons = seasons.filter((s) => s.status === 'archived');
 
+  const [activeSeasonContext, setActiveSeasonContext] = useState<{
+    activeSeasonalGoalsCount: number;
+    milestonesDueThisWeekCount: number;
+    goals: any[];
+  } | null>(null);
+
+  useEffect(() => {
+    if (user && activeSeason?.id) {
+      seasonsService.getActiveSeasonContext(user.id, activeSeason.id).then((res) => {
+        setActiveSeasonContext(res);
+      });
+    } else {
+      setActiveSeasonContext(null);
+    }
+  }, [user, activeSeason?.id]);
+
   return {
     seasons,
     activeSeason,
     archivedSeasons,
+    activeSeasonContext,
     loading,
     error,
     refresh: fetchSeasons,

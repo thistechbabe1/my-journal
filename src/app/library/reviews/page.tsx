@@ -64,12 +64,12 @@ export default function ReviewsArchivePage() {
         <div>
           <Link
             href="/library"
-            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light uppercase tracking-wider flex items-center gap-1 mb-2"
+            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light flex items-center gap-1 mb-2"
           >
             <ArrowLeft size={10} />
             <span>Library Vault</span>
           </Link>
-          <h1 className="text-4xl font-serif font-light tracking-wide text-foreground">
+          <h1 className="text-4xl font-serif font-light text-foreground">
             Reviews Archive
           </h1>
           <p className="text-xs text-sharon-muted mt-1.5">
@@ -106,41 +106,41 @@ export default function ReviewsArchivePage() {
                 {isExpanded && (
                   <div className="mt-4 pl-4 border-l-2 border-sharon-primary/30 space-y-4 animate-fade-in font-serif italic text-sm text-foreground/90 leading-relaxed">
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-wider font-sans text-sharon-muted block mb-0.5">Biggest win</span>
+                      <span className="text-[9px] font-bold font-sans text-sharon-muted block mb-0.5">Biggest win</span>
                       <p>{review.win}</p>
                     </div>
 
                     {review.lesson && (
                       <div>
-                        <span className="text-[9px] font-bold uppercase tracking-wider font-sans text-sharon-muted block mb-0.5">Core lessons</span>
+                        <span className="text-[9px] font-bold font-sans text-sharon-muted block mb-0.5">Core lessons</span>
                         <p>{review.lesson}</p>
                       </div>
                     )}
 
                     {review.mistake && (
                       <div>
-                        <span className="text-[9px] font-bold uppercase tracking-wider font-sans text-sharon-muted block mb-0.5">Hurdles & mistakes</span>
+                        <span className="text-[9px] font-bold font-sans text-sharon-muted block mb-0.5">Hurdles & mistakes</span>
                         <p>{review.mistake}</p>
                       </div>
                     )}
 
                     {review.avoided && (
                       <div>
-                        <span className="text-[9px] font-bold uppercase tracking-wider font-sans text-sharon-muted block mb-0.5">Avoid list</span>
+                        <span className="text-[9px] font-bold font-sans text-sharon-muted block mb-0.5">Avoid list</span>
                         <p>{review.avoided}</p>
                       </div>
                     )}
 
                     {review.improved && (
                       <div>
-                        <span className="text-[9px] font-bold uppercase tracking-wider font-sans text-sharon-muted block mb-0.5">Improvements planned</span>
+                        <span className="text-[9px] font-bold font-sans text-sharon-muted block mb-0.5">Improvements planned</span>
                         <p>{review.improved}</p>
                       </div>
                     )}
 
                     {review.focus && (
                       <div>
-                        <span className="text-[9px] font-bold uppercase tracking-wider font-sans text-sharon-accent block mb-0.5">Next period intention</span>
+                        <span className="text-[9px] font-bold font-sans text-sharon-accent block mb-0.5">Next period intention</span>
                         <p className="text-foreground font-semibold">{review.focus}</p>
                       </div>
                     )}

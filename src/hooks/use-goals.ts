@@ -106,13 +106,40 @@ export function useGoals() {
     }
   };
 
-  const addMilestone = async (goalId: string, text: string) => {
+  const addMilestone = async (
+    goalId: string,
+    payload: {
+      text: string;
+      target_date?: string | null;
+      person_id?: string | null;
+      campaign_id?: string | null;
+    } | string
+  ) => {
     try {
-      const { data, error } = await goalsService.addMilestone(goalId, text);
+      const { data, error } = await goalsService.addMilestone(goalId, payload);
       if (error) throw error;
 
       // Refresh goals list
-      const refreshed = await goalsService.getGoals(user.id!);
+      const refreshed = await goalsService.getGoals(user!.id);
+      if (refreshed.data) setGoals(refreshed.data);
+
+      return { data, error: null };
+    } catch (err: any) {
+      return { error: err.message || err };
+    }
+  };
+
+  const updateMilestone = async (
+    goalId: string,
+    milestoneId: string,
+    updates: Partial<import('@/types').GoalMilestone>
+  ) => {
+    try {
+      const { data, error } = await goalsService.updateMilestone(goalId, milestoneId, updates);
+      if (error) throw error;
+
+      // Refresh goals list
+      const refreshed = await goalsService.getGoals(user!.id);
       if (refreshed.data) setGoals(refreshed.data);
 
       return { data, error: null };
@@ -127,7 +154,7 @@ export function useGoals() {
       if (error) throw error;
 
       // Refresh goals list
-      const refreshed = await goalsService.getGoals(user.id!);
+      const refreshed = await goalsService.getGoals(user!.id);
       if (refreshed.data) setGoals(refreshed.data);
 
       return { error: null };
@@ -145,6 +172,7 @@ export function useGoals() {
     deleteGoal,
     toggleMilestone,
     addMilestone,
+    updateMilestone,
     deleteMilestone
   };
 }

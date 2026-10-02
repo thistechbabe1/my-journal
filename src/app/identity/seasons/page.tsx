@@ -6,11 +6,13 @@ import { Calendar, Compass, Plus, Check, Archive, ArrowLeft, X } from 'lucide-re
 import { useToast } from '@/components/feedback/ToastProvider';
 import Link from 'next/link';
 import { Divider, FieldLabel, ActionButton } from '@/components/editorial';
+import { getLocalDateStr, diffDaysFromToday } from '@/lib/date-utils';
 
 export default function SeasonsPage() {
   const {
     activeSeason,
     archivedSeasons,
+    activeSeasonContext,
     loading,
     saveSeason,
     archiveSeason
@@ -24,7 +26,7 @@ export default function SeasonsPage() {
   // Create Season Form States
   const [name, setName] = useState('');
   const [theme, setTheme] = useState('');
-  const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
+  const [startDate, setStartDate] = useState(getLocalDateStr());
   const [endDate, setEndDate] = useState('');
   const [primaryFocus, setPrimaryFocus] = useState('Career');
   const [supportingFocus, setSupportingFocus] = useState('');
@@ -99,12 +101,12 @@ export default function SeasonsPage() {
         <div>
           <Link
             href="/identity"
-            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light uppercase tracking-wider flex items-center gap-1 mb-2"
+            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light flex items-center gap-1 mb-2"
           >
             <ArrowLeft size={10} />
             <span>Identity Constitution</span>
           </Link>
-          <h1 className="text-4xl font-serif font-light tracking-wide text-foreground">
+          <h1 className="text-4xl font-serif font-light text-foreground">
             Seasonal Chapters
           </h1>
           <p className="text-xs text-sharon-muted mt-1.5 font-sans">
@@ -227,10 +229,10 @@ export default function SeasonsPage() {
           
           <div className="md:col-span-8 space-y-6">
             <div>
-              <span className="text-[9px] font-bold text-sharon-primary bg-sharon-primary/10 border border-sharon-primary/20 px-2.5 py-0.5 rounded uppercase tracking-wider">
+              <span className="text-[9px] font-bold text-sharon-primary bg-sharon-primary/10 border border-sharon-primary/20 px-2.5 py-0.5 rounded ">
                 Current Active Chapter
               </span>
-              <h2 className="font-serif text-3xl font-light text-foreground mt-2 tracking-wide">
+              <h2 className="font-serif text-3xl font-light text-foreground mt-2 ">
                 {activeSeason.name}
               </h2>
               <p className="text-sm font-serif italic text-sharon-muted mt-2 leading-relaxed">
@@ -239,7 +241,7 @@ export default function SeasonsPage() {
             </div>
 
             <div className="space-y-3">
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block border-b border-card-border/10 pb-1.5">
+              <span className="text-[10px] font-bold text-sharon-muted block border-b border-card-border/10 pb-1.5">
                 Core Chapter Intentions
               </span>
               
@@ -297,14 +299,31 @@ export default function SeasonsPage() {
 
           <div className="md:col-span-4 space-y-5 text-left border-l border-card-border/15 pl-6">
             <div>
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Chapter Dates</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">Chapter Timeline</span>
               <p className="text-xs text-foreground font-semibold mt-1">
-                {new Date(activeSeason.start_date).toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})} - {new Date(activeSeason.end_date).toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}
+                {new Date(activeSeason.start_date + 'T00:00:00').toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})} - {new Date(activeSeason.end_date + 'T00:00:00').toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}
               </p>
+              <span className="text-[10px] text-sharon-primary font-medium block mt-0.5 font-serif italic">
+                {diffDaysFromToday(activeSeason.end_date) >= 0
+                  ? `⌛ ${diffDaysFromToday(activeSeason.end_date)} days remaining`
+                  : '⚠️ Season deadline reached'}
+              </span>
             </div>
 
+            {activeSeasonContext && (
+              <div className="p-3 rounded-lg bg-card/60 border border-card-border/60 space-y-1">
+                <span className="text-[9px] font-bold text-sharon-muted block">Strategic Operational Context</span>
+                <span className="text-xs font-semibold text-foreground block">
+                  🎯 {activeSeasonContext.activeSeasonalGoalsCount} active seasonal goal{activeSeasonContext.activeSeasonalGoalsCount === 1 ? '' : 's'}
+                </span>
+                <span className="text-[10px] text-sharon-muted block">
+                  🚩 {activeSeasonContext.milestonesDueThisWeekCount} milestone{activeSeasonContext.milestonesDueThisWeekCount === 1 ? '' : 's'} due this week
+                </span>
+              </div>
+            )}
+
             <div>
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Primary Focus</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">Primary Focus</span>
               <p className="text-xs text-foreground font-semibold mt-1">
                 🎯 {activeSeason.primary_focus}
               </p>
@@ -312,7 +331,7 @@ export default function SeasonsPage() {
 
             {activeSeason.supporting_focus && (
               <div>
-                <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Supporting Focus</span>
+                <span className="text-[10px] font-bold text-sharon-muted block">Supporting Focus</span>
                 <p className="text-xs text-foreground font-semibold mt-1">
                   🌱 {activeSeason.supporting_focus}
                 </p>
@@ -345,7 +364,7 @@ export default function SeasonsPage() {
                     <h4 className="font-serif text-lg font-bold text-foreground leading-tight">
                       {season.name}
                     </h4>
-                    <p className="text-[10px] text-sharon-muted font-bold tracking-wider mt-0.5">
+                    <p className="text-[10px] text-sharon-muted font-bold mt-0.5">
                       {new Date(season.start_date).getFullYear()} • Focus: {season.primary_focus}
                     </p>
                   </div>

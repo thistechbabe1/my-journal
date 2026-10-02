@@ -5,6 +5,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { journalService } from '@/services/journal-service';
 import { profileService } from '@/services/profile-service';
 import { JournalEntry, DailyFocus } from '@/types';
+import { getLocalDateStr } from '@/lib/date-utils';
 
 export function useJournal(filters?: {
   startDate?: string;
@@ -19,7 +20,7 @@ export function useJournal(filters?: {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const filterString = filters ? JSON.stringify(filters) : '';
+  const filterString = JSON.stringify(filters || {});
 
   const fetchJournalData = useCallback(async () => {
     if (!user) return;
@@ -32,7 +33,7 @@ export function useJournal(filters?: {
       setEntries(data || []);
 
       // Fetch today's focus
-      const todayStr = new Date().toISOString().split('T')[0];
+      const todayStr = getLocalDateStr();
       const focusRes = await journalService.getDailyFocus(user.id, todayStr);
       setDailyFocus(focusRes.data);
     } catch (err: any) {
@@ -102,7 +103,7 @@ export function useJournal(filters?: {
       const { data, error } = await journalService.saveDailyFocus(user.id, focus);
       if (error) throw error;
 
-      const todayStr = new Date().toISOString().split('T')[0];
+      const todayStr = getLocalDateStr();
       if (focus.date === todayStr) {
         setDailyFocus(data);
       }

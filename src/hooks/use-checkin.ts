@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { checkinService } from '@/services/checkin-service';
 import { DailyCheckIn, IntellectualGrowthLog } from '@/types';
+import { getLocalDateStr } from '@/lib/date-utils';
 
 export function useCheckIn(date: string) {
   const { user } = useAuth();
@@ -14,22 +15,21 @@ export function useCheckIn(date: string) {
   const [error, setError] = useState<string | null>(null);
 
   const getWeekRange = useCallback(() => {
-    const today = new Date(date);
+    const today = new Date(date + 'T00:00:00');
     const day = today.getDay(); // 0 is Sunday, 1 is Monday, etc.
     
     // Calculate Monday of the current week
     const diff = today.getDate() - day + (day === 0 ? -6 : 1);
-    const monday = new Date(new Date(date).setDate(diff));
-    monday.setHours(0, 0, 0, 0);
+    const monday = new Date(today);
+    monday.setDate(diff);
 
     // Sunday of the current week
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
-    sunday.setHours(23, 59, 59, 999);
 
     return {
-      mondayStr: monday.toISOString().split('T')[0],
-      sundayStr: sunday.toISOString().split('T')[0]
+      mondayStr: getLocalDateStr(monday),
+      sundayStr: getLocalDateStr(sunday)
     };
   }, [date]);
 
@@ -126,7 +126,7 @@ export function useCheckIn(date: string) {
       // If Sunday, add 6 to Monday
       const dayOffset = d.dayOfWeekIndex === 0 ? 6 : d.dayOfWeekIndex - 1;
       targetDate.setDate(monday.getDate() + dayOffset);
-      const targetDateStr = targetDate.toISOString().split('T')[0];
+      const targetDateStr = getLocalDateStr(targetDate);
 
       // Check if log completed for this date
       const log = weeklyLogs.find((l) => l.date === targetDateStr && l.completed);

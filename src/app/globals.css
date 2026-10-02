@@ -3,20 +3,23 @@
 
 :root {
   --background: #FAF7F2;
-  --foreground: #2D2926;
+  --foreground: #1C241F;
   --card-bg: #FFFFFF;
-  --card-border: #E9E3D9;
+  --card-border: #E5DFD5;
   
-  --primary: #AC5A46;
-  --primary-light: #C8806F;
-  --accent: #5C7465;
-  --accent-dark: #425348;
+  --primary: #2D4A3E;
+  --primary-light: #3F6354;
+  --sharon-primary: #2D4A3E;
+  --sharon-primary-light: #3F6354;
+  --accent: #8C5E2B;
+  --accent-dark: #6D471F;
   
-  --muted: #7A7570;
-  --muted-light: #F4F0E8;
+  --muted: #526056;
+  --sharon-muted: #526056;
+  --muted-light: #F3EFE8;
   
-  --success: #5C7465;
-  --warning: #C2A778;
+  --success: #2D4A3E;
+  --warning: #8C5E2B;
   --danger: #A65B5B;
 
   --font-serif: 'Cormorant Garamond', Georgia, serif;
@@ -25,18 +28,21 @@
 }
 
 .dark {
-  --background: #141312;
-  --foreground: #EAE6E1;
-  --card-bg: #1C1A19;
-  --card-border: #262422;
+  --background: #121815;
+  --foreground: #F3EFEA;
+  --card-bg: #1A221E;
+  --card-border: #28342D;
   
-  --primary: #C47D6C;
-  --primary-light: #8E584C;
-  --accent: #8EA897;
-  --accent-dark: #A6BEAE;
+  --primary: #78A390;
+  --primary-light: #94BAA8;
+  --sharon-primary: #78A390;
+  --sharon-primary-light: #94BAA8;
+  --accent: #D9A86C;
+  --accent-dark: #B5864C;
   
-  --muted: #928C86;
-  --muted-light: #22201F;
+  --muted: #9BB0A3;
+  --sharon-muted: #9BB0A3;
+  --muted-light: #1F2924;
 }
 
 
@@ -53,6 +59,10 @@
   
   --color-sharon-muted: var(--muted);
   --color-sharon-muted-light: var(--muted-light);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
   
   --font-sans: var(--font-sans), system-ui, sans-serif;
   --font-serif: var(--font-serif), Georgia, serif;
@@ -64,6 +74,17 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Global default for Lucide and stroke-based icons so they never inherit black text */
+svg.lucide,
+svg[stroke="currentColor"] {
+  color: var(--sharon-primary);
+}
+
+button[class*="bg-sharon-primary"] svg,
+a[class*="bg-sharon-primary"] svg {
+  color: #FFFFFF;
 }
 
 h1, h2, h3, h4, h5, h6, .font-serif-editorial {
@@ -128,6 +149,7 @@ input[type="password"],
 input[type="date"],
 textarea,
 select {
+  min-height: 44px;
   background-color: color-mix(in srgb, var(--muted-light) 30%, transparent);
   border: 1px solid var(--card-border);
   border-radius: 0.5rem;

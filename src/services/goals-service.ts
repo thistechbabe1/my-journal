@@ -11,27 +11,28 @@ export const goalsService = {
 
     if (goalsError || !goals) return { data: null, error: goalsError };
 
-    // Fetch milestones for all these goals
-    const goalIds = goals.map((g: any) => g.id);
-    if (goalIds.length === 0) return { data: [], error: null };
-
-    // Get milestones
-    const { data: milestones, error: msError } = await supabase
+    // Fetch milestones & seasons
+    const { data: milestones } = await supabase
       .from('goal_milestones')
       .select('*');
 
-    if (msError) return { data: goals, error: null }; // return goals without milestones if error
+    const { data: seasons } = await supabase
+      .from('seasons')
+      .select('id, name, theme')
+      .eq('user_id', userId);
 
-    // Map milestones to goals
-    const goalsWithMilestones = goals.map((goal: any) => {
+    // Map milestones & season to goals
+    const goalsWithRelations = goals.map((goal: any) => {
       const goalMs = (milestones || []).filter((m: any) => m.goal_id === goal.id);
+      const matchedSeason = (seasons || []).find((s: any) => s.id === goal.season_id) || null;
       return {
         ...goal,
-        milestones: goalMs
+        milestones: goalMs,
+        season: matchedSeason
       };
     });
 
-    return { data: goalsWithMilestones, error: null };
+    return { data: goalsWithRelations, error: null };
   },
 
   async saveGoal(userId: string, goal: Partial<Goal>, milestonesList?: string[]): Promise<{ data: Goal | null; error: any }> {
@@ -44,6 +45,7 @@ export const goalsService = {
         .update(goal)
         .eq('id', goal.id)
         .eq('user_id', userId)
+        .select()
         .single();
       savedGoal = data;
       error = uErr;
@@ -51,6 +53,7 @@ export const goalsService = {
       const { data, error: iErr } = await supabase
         .from('goals')
         .insert({ user_id: userId, ...goal })
+        .select()
         .single();
       savedGoal = data;
       error = iErr;
@@ -99,9 +102,10 @@ export const goalsService = {
   },
 
   async toggleMilestone(goalId: string, milestoneId: string, completed: boolean): Promise<{ error: any }> {
+    const completedAt = completed ? new Date().toISOString() : null;
     const { error } = await supabase
       .from('goal_milestones')
-      .update({ completed })
+      .update({ completed, completed_at: completedAt })
       .eq('id', milestoneId);
 
     if (error) return { error };
@@ -126,10 +130,59 @@ export const goalsService = {
     return { error: null };
   },
 
-  async addMilestone(goalId: string, text: string): Promise<{ data: GoalMilestone | null; error: any }> {
+  async addMilestone(
+    goalId: string,
+    payload: {
+      text: string;
+      target_date?: string | null;
+      person_id?: string | null;
+      campaign_id?: string | null;
+    } | string
+  ): Promise<{ data: GoalMilestone | null; error: any }> {
+    const milestoneData = typeof payload === 'string'
+      ? { goal_id: goalId, text: payload, completed: false }
+      : {
+          goal_id: goalId,
+          text: payload.text,
+          target_date: payload.target_date ?? null,
+          person_id: payload.person_id ?? null,
+          campaign_id: payload.campaign_id ?? null,
+          completed: false
+        };
+
     const { data, error } = await supabase
       .from('goal_milestones')
-      .insert({ goal_id: goalId, text, completed: false })
+      .insert(milestoneData)
+      .select()
+      .single();
+
+    if (error) return { data: null, error };
+
+    // Recalculate progress
+    const { data: milestones } = await supabase
+      .from('goal_milestones')
+      .select('*')
+      .eq('goal_id', goalId);
+
+    if (milestones && milestones.length > 0) {
+      const completedCount = milestones.filter((m: any) => m.completed).length;
+      const progress = Math.round((completedCount / milestones.length) * 100);
+      await supabase.from('goals').update({ progress }).eq('id', goalId);
+    }
+
+    return { data, error };
+  },
+
+  async updateMilestone(
+    goalId: string,
+    milestoneId: string,
+    updates: Partial<GoalMilestone>
+  ): Promise<{ data: GoalMilestone | null; error: any }> {
+    const { data, error } = await supabase
+      .from('goal_milestones')
+      .update(updates)
+      .eq('id', milestoneId)
+      .select()
       .single();
 
     if (error) return { data: null, error };

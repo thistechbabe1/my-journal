@@ -7,7 +7,7 @@ export default function QuoteBlock({ quote, author }: { quote: string; author?: 
         &ldquo;{quote}&rdquo;
       </p>
       {author && (
-        <span className="block text-[10px] uppercase tracking-widest text-sharon-muted mt-2 font-semibold">
+        <span className="block text-[10px] text-sharon-muted mt-2 font-semibold">
           — {author}
         </span>
       )}

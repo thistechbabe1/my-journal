@@ -142,12 +142,12 @@ export default function ReviewsPage() {
         <div>
           <Link
             href="/growth"
-            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light uppercase tracking-wider flex items-center gap-1 mb-2"
+            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light flex items-center gap-1 mb-2"
           >
             <ArrowLeft size={10} />
             <span>Growth Hub</span>
           </Link>
-          <h1 className="text-4xl font-serif font-light tracking-wide text-foreground">
+          <h1 className="text-4xl font-serif font-light text-foreground">
             Periodic Reviews
           </h1>
           <p className="text-xs text-sharon-muted mt-1.5">
@@ -171,7 +171,7 @@ export default function ReviewsPage() {
           <button
             key={tab.type}
             onClick={() => setActiveTab(tab.type)}
-            className={`text-[10px] font-bold tracking-wider uppercase pb-1.5 cursor-pointer transition-all border-b-2 ${
+            className={`text-[10px] font-bold pb-1.5 cursor-pointer transition-all border-b-2 ${
               activeTab === tab.type
                 ? 'border-sharon-primary text-sharon-primary'
                 : 'border-transparent text-sharon-muted hover:text-foreground'
@@ -200,7 +200,7 @@ export default function ReviewsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1 col-span-1 md:col-span-2">
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Biggest Win / Progress</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">Biggest Win / Progress</span>
               <input
                 type="text"
                 placeholder="What went well in this period?"
@@ -212,7 +212,7 @@ export default function ReviewsPage() {
             </div>
 
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Key Lesson Learned</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">Key Lesson Learned</span>
               <textarea
                 rows={3}
                 placeholder="Insights curation..."
@@ -223,7 +223,7 @@ export default function ReviewsPage() {
             </div>
 
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Core Mistake / Hurdle</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">Core Mistake / Hurdle</span>
               <textarea
                 rows={3}
                 placeholder="What went wrong?"
@@ -234,7 +234,7 @@ export default function ReviewsPage() {
             </div>
 
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">What to Avoid</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">What to Avoid</span>
               <textarea
                 rows={3}
                 placeholder="Avoid patterns..."
@@ -245,7 +245,7 @@ export default function ReviewsPage() {
             </div>
 
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">How to Improve</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">How to Improve</span>
               <textarea
                 rows={3}
                 placeholder="Core changes next period..."
@@ -256,7 +256,7 @@ export default function ReviewsPage() {
             </div>
 
             <div className="space-y-1 col-span-1 md:col-span-2">
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Next Period Focus Intention</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">Next Period Focus Intention</span>
               <input
                 type="text"
                 placeholder="One core focus target..."

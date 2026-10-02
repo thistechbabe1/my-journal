@@ -195,7 +195,7 @@ export default function JournalPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-serif font-light text-foreground tracking-wide">
+          <h1 className="text-3xl sm:text-4xl font-serif font-light text-foreground ">
             Journal
           </h1>
           <p className="text-xs text-sharon-muted mt-1 font-sans">
@@ -237,7 +237,7 @@ export default function JournalPage() {
         {/* Date & Mood bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 font-sans select-none border-b border-card-border/20 pb-4">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest">Date</span>
+            <span className="text-[10px] font-bold text-sharon-muted ">Date</span>
             <input
               type="date"
               value={date}
@@ -247,7 +247,7 @@ export default function JournalPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest">Mood</span>
+            <span className="text-[10px] font-bold text-sharon-muted ">Mood</span>
             <div className="flex gap-2">
               {moodEmojis.map((emoji, idx) => (
                 <button
@@ -269,7 +269,7 @@ export default function JournalPage() {
         {/* Text Area Writing Slate */}
         <div className="space-y-2">
           <div className="flex justify-between items-center select-none">
-            <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest">
+            <span className="text-[10px] font-bold text-sharon-muted ">
               {activeEntry?.id ? 'Edit Entry' : 'Today\'s Log'}
             </span>
 
@@ -278,7 +278,7 @@ export default function JournalPage() {
               <button
                 type="button"
                 onClick={() => setShowTemplates(!showTemplates)}
-                className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light uppercase tracking-wider flex items-center gap-1 cursor-pointer"
+                className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light flex items-center gap-1 cursor-pointer"
               >
                 <Plus size={10} />
                 <span>Templates</span>
@@ -323,7 +323,7 @@ export default function JournalPage() {
 
         {/* Tags bar */}
         <div className="space-y-1.5 border-t border-card-border/20 pt-4">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-sharon-muted block">Tags (comma separated)</label>
+          <label className="text-[10px] font-bold text-sharon-muted block">Tags (comma separated)</label>
           <input
             type="text"
             placeholder="e.g. reflections, code, faith"
@@ -366,7 +366,7 @@ export default function JournalPage() {
 
       {/* Index list of Previous Entries */}
       <div className="space-y-5">
-        <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">
+        <span className="text-[10px] font-bold text-sharon-muted block">
           Previous Entries
         </span>
 
@@ -412,7 +412,7 @@ export default function JournalPage() {
                       </span>
                     )}
                     {entry.tags && entry.tags.length > 0 && (
-                      <span className="text-[9px] font-bold bg-sharon-muted-light/60 border border-card-border/40 px-1.5 py-0.5 rounded text-sharon-muted font-sans tracking-wide">
+                      <span className="text-[9px] font-bold bg-sharon-muted-light/60 border border-card-border/40 px-1.5 py-0.5 rounded text-sharon-muted font-sans ">
                         {entry.tags[0]}
                       </span>
                     )}

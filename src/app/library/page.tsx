@@ -8,6 +8,12 @@ import { Divider } from '@/components/editorial';
 export default function LibraryHub() {
   const vaults = [
     {
+      name: 'Memoirs & Archives',
+      desc: 'Your life, recorded over time — Seasonal dossiers, On This Day memoirs, and archives.',
+      path: '/library/memoirs',
+      icon: Book
+    },
+    {
       name: 'Letters Capsule',
       desc: 'Stationery messages composed to your future self.',
       path: '/library/letters',
@@ -32,10 +38,10 @@ export default function LibraryHub() {
       
       {/* Header */}
       <div className="space-y-1">
-        <span className="text-[10px] font-bold text-sharon-primary uppercase tracking-widest bg-sharon-primary/10 border border-sharon-primary/20 px-2 py-0.5 rounded">
+        <span className="text-[10px] font-bold text-sharon-primary bg-sharon-primary/10 border border-sharon-primary/20 px-2 py-0.5 rounded">
           Quiet Archives
         </span>
-        <h1 className="text-3xl sm:text-4xl font-serif font-light text-foreground tracking-wide mt-2">
+        <h1 className="text-3xl sm:text-4xl font-serif font-light text-foreground mt-2">
           The Library
         </h1>
         <p className="text-xs text-sharon-muted mt-1.5 font-sans">

@@ -4,7 +4,7 @@ export default function PageHeader({ title, description, action }: { title: stri
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-card-border/60 pb-6 text-left">
       <div>
-        <h1 className="text-4xl font-serif font-light tracking-wide text-foreground">
+        <h1 className="text-4xl font-serif font-light text-foreground">
           {title}
         </h1>
         {description && (

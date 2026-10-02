@@ -48,26 +48,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-[#121A16] via-[#1E2E25] to-[#121A16] px-4 py-12 relative overflow-hidden font-sans">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12 relative overflow-hidden font-sans text-foreground">
       {/* Decorative blurry backgrounds */}
-      <div className="absolute -top-[10%] -right-[10%] w-[350px] h-[350px] rounded-full bg-white/5 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-[10%] -left-[10%] w-[300px] h-[300px] rounded-full bg-white/5 blur-2xl pointer-events-none" />
+      <div className="absolute -top-[10%] -right-[10%] w-[350px] h-[350px] rounded-full bg-sharon-primary/5 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-[10%] -left-[10%] w-[300px] h-[300px] rounded-full bg-sharon-primary/5 blur-2xl pointer-events-none" />
 
       {/* Main Container Card */}
-      <div className="bg-card/90 dark:bg-card/75 border border-card-border/60 shadow-2xl rounded-2xl p-8 sm:p-10 max-w-md w-full text-center space-y-7 backdrop-blur-md relative z-10">
+      <div className="bg-card border border-card-border shadow-xs rounded-2xl p-8 sm:p-10 max-w-md w-full text-center space-y-7 relative z-10">
         
         {/* Brand Monogram */}
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded bg-[#5C7465] flex items-center justify-center text-[#FAF7F2] font-serif font-bold text-lg shadow-sm select-none">
+          <div className="w-10 h-10 rounded bg-sharon-primary flex items-center justify-center text-white font-serif font-bold text-lg shadow-sm select-none">
             S
           </div>
           <div className="space-y-1">
-            <h2 className="text-2xl font-serif font-medium text-foreground tracking-wide">
+            <h2 className="text-2xl font-serif font-medium text-foreground ">
               Welcome back
             </h2>
-            <p className="text-xs text-sharon-muted leading-relaxed font-sans">
-              Sign in to your personal operating space
-            </p>
           </div>
         </div>
 
@@ -82,17 +79,18 @@ export default function LoginPage() {
           <div className="space-y-4 text-left">
             {/* Email Address */}
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-widest text-sharon-muted">Email Address</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sharon-muted">
-                  <Mail size={14} />
+              <label className="text-xs font-medium text-sharon-muted">Email address</label>
+              <div className="relative flex items-center">
+                <div className="absolute left-3.5 flex items-center pointer-events-none text-sharon-muted">
+                  <Mail size={15} />
                 </div>
                 <input
                   type="email"
                   placeholder="sharon@growth.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-sharon-muted-light/35 border border-card-border/60 rounded-lg py-2.5 pl-9 pr-4 text-xs focus:border-sharon-primary outline-none transition-colors text-foreground font-semibold"
+                  style={{ paddingLeft: '44px' }}
+                  className="w-full bg-sharon-muted-light/35 border border-card-border/60 rounded-lg py-2.5 pr-4 text-xs focus:border-sharon-primary outline-none transition-colors text-foreground font-medium min-h-[44px]"
                   required
                 />
               </div>
@@ -100,17 +98,18 @@ export default function LoginPage() {
 
             {/* Password */}
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-widest text-sharon-muted">Password</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sharon-muted">
-                  <Lock size={14} />
+              <label className="text-xs font-medium text-sharon-muted">Password</label>
+              <div className="relative flex items-center">
+                <div className="absolute left-3.5 flex items-center pointer-events-none text-sharon-muted">
+                  <Lock size={15} />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-sharon-muted-light/35 border border-card-border/60 rounded-lg py-2.5 pl-9 pr-10 text-xs focus:border-sharon-primary outline-none transition-colors text-foreground font-semibold"
+                  style={{ paddingLeft: '44px' }}
+                  className="w-full bg-sharon-muted-light/35 border border-card-border/60 rounded-lg py-2.5 pr-10 text-xs focus:border-sharon-primary outline-none transition-colors text-foreground font-medium min-h-[44px]"
                   required
                 />
                 <button

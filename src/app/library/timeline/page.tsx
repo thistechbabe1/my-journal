@@ -1,202 +1,171 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/providers/auth-provider';
-import { Clock, ArrowLeft, Award, Book, Compass, Star } from 'lucide-react';
-import { useToast } from '@/components/feedback/ToastProvider';
+import React from 'react';
+import { useMemoirs } from '@/hooks/use-memoirs';
+import { Clock, ArrowLeft, Award, Book, Compass, Star, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { Divider } from '@/components/editorial';
-
-interface TimelineItem {
-  id: string;
-  type: 'goal' | 'season' | 'learning' | 'win';
-  date: string;
-  title: string;
-  description: string;
-}
 
 export default function TimelinePage() {
-  const { user } = useAuth();
-  const { toast } = useToast();
-
-  const [items, setItems] = useState<TimelineItem[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchTimeline = async () => {
-    if (!user) return;
-    setLoading(true);
-    try {
-      const timelineList: TimelineItem[] = [];
-
-      // 1. Fetch completed goals (100% progress)
-      const { data: goals } = await supabase
-        .from('goals')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('progress', 100);
-
-      if (goals) {
-        goals.forEach((g: any) => {
-          timelineList.push({
-            id: `goal-${g.id}`,
-            type: 'goal',
-            date: g.deadline || g.created_at || new Date().toISOString(),
-            title: `Goal Achieved: ${g.title}`,
-            description: g.description || 'Target milestone achieved successfully.'
-          });
-        });
-      }
-
-      // 2. Fetch concluded seasons
-      const { data: seasons } = await supabase
-        .from('seasons')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('status', 'archived');
-
-      if (seasons) {
-        seasons.forEach((s: any) => {
-          timelineList.push({
-            id: `season-${s.id}`,
-            type: 'season',
-            date: s.end_date || new Date().toISOString(),
-            title: `Chapter Concluded: ${s.name}`,
-            description: s.review || `Finished season focusing on ${s.primary_focus}.`
-          });
-        });
-      }
-
-      // 3. Fetch completed learning resources
-      const { data: learning } = await supabase
-        .from('learning_resources')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('status', 'completed');
-
-      if (learning) {
-        learning.forEach((l: any) => {
-          timelineList.push({
-            id: `learning-${l.id}`,
-            type: 'learning',
-            date: l.completion_date || l.created_at || new Date().toISOString(),
-            title: `Study Completed: ${l.title}`,
-            description: l.author ? `By ${l.author}. ${l.reflections || ''}` : l.reflections || 'Finished resource study.'
-          });
-        });
-      }
-
-      // 4. Fetch daily check-in wins
-      const { data: checkins } = await supabase
-        .from('daily_check_ins')
-        .select('*')
-        .eq('user_id', user.id)
-        .not('win', 'is', null);
-
-      if (checkins) {
-        checkins.forEach((c: any) => {
-          if (c.win && c.win.trim().length > 0) {
-            timelineList.push({
-              id: `win-${c.id}`,
-              type: 'win',
-              date: c.date,
-              title: `Daily Milestone`,
-              description: c.win
-            });
-          }
-        });
-      }
-
-      // Sort timeline: Newest to oldest
-      timelineList.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-      setItems(timelineList);
-    } catch (err: any) {
-      toast(`Error compiling timeline: ${err.message}`, 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchTimeline();
-  }, [user]);
+  const {
+    memoirs,
+    totalCount,
+    filter,
+    page,
+    totalPages,
+    loading,
+    setPage,
+    setYearFilter,
+    setTypeFilter
+  } = useMemoirs({}, 15);
 
   const icons = {
-    goal: Award,
-    season: Compass,
-    learning: Book,
-    win: Star
+    journal: Book,
+    season_review: Compass,
+    goal_achieved: Award,
+    period_review: Star,
+    future_letter: Book,
+    timeline_event: Clock
   };
 
   const colors = {
-    goal: 'text-sharon-primary bg-sharon-primary/10 border-sharon-primary/20',
-    season: 'text-sharon-accent bg-sharon-accent/10 border-sharon-accent/20',
-    learning: 'text-foreground bg-sharon-muted-light/60 border-card-border/40',
-    win: 'text-sharon-primary bg-sharon-primary/10 border-sharon-primary/20'
+    journal: 'text-foreground bg-sharon-muted-light/60 border-card-border/40',
+    season_review: 'text-sharon-accent bg-sharon-accent/10 border-sharon-accent/20',
+    goal_achieved: 'text-sharon-primary bg-emerald-500/10 border-emerald-500/20',
+    period_review: 'text-sharon-primary bg-sharon-primary/10 border-sharon-primary/20',
+    future_letter: 'text-sharon-primary bg-purple-400/10 border-purple-400/20',
+    timeline_event: 'text-sharon-primary bg-amber-500/10 border-amber-500/20'
+  };
+
+  const typeLabels = {
+    journal: 'Journal Memoir',
+    season_review: 'Season Concluded',
+    goal_achieved: 'Goal Achieved',
+    period_review: 'Period Review',
+    future_letter: 'Future Letter',
+    timeline_event: 'Life Milestone'
   };
 
   return (
-    <div className="space-y-10 max-w-2xl mx-auto py-2">
+    <div className="space-y-10 max-w-2xl mx-auto py-2 font-sans text-left animate-fade-in">
       
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-card-border/60 pb-6 text-left font-sans">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-card-border/60 pb-6 text-left">
         <div>
           <Link
             href="/library"
-            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light uppercase tracking-wider flex items-center gap-1 mb-2"
+            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light flex items-center gap-1 mb-2"
           >
             <ArrowLeft size={10} />
             <span>Library Vault</span>
           </Link>
-          <h1 className="text-4xl font-serif font-light tracking-wide text-foreground">
+          <h1 className="text-4xl font-serif font-light text-foreground">
             Life Timeline
           </h1>
-          <p className="text-xs text-sharon-muted mt-1.5">
-            Your self-writing autobiography index. Highlights goals met, concluded seasons, and daily wins.
+          <p className="text-xs text-sharon-muted mt-1.5 font-serif italic">
+            "Your life, recorded over time." — Chronological autobiography stream.
           </p>
         </div>
+        <Link
+          href="/library/memoirs"
+          className="px-3.5 py-1.5 rounded-lg border border-sharon-primary hover:bg-sharon-muted-light/60 text-foreground font-semibold text-xs transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer"
+        >
+          <Compass size={13} className="text-sharon-primary" />
+          <span>Memoirs & Archives</span>
+        </Link>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-semibold">
+        {['all', 'journal', 'season_review', 'goal_achieved', 'period_review', 'timeline_event'].map((typeKey) => (
+          <button
+            key={typeKey}
+            onClick={() => setTypeFilter(typeKey as any)}
+            className={`px-3 py-1.5 rounded-lg border transition-colors shrink-0 cursor-pointer ${
+              (filter.type || 'all') === typeKey
+                ? 'bg-sharon-primary text-white border-sharon-primary'
+                : 'bg-card border-card-border/60 text-sharon-muted hover:border-sharon-primary/40'
+            }`}
+          >
+            {typeKey === 'all' ? 'All Milestones' : typeLabels[typeKey as keyof typeof typeLabels]}
+          </button>
+        ))}
       </div>
 
       {loading ? (
         <div className="py-16 text-center">
           <div className="w-5 h-5 border border-sharon-primary border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
-      ) : items.length > 0 ? (
-        <div className="relative border-l border-card-border/30 pl-6 ml-3 space-y-8 text-left font-sans">
-          {items.map((item) => {
-            const Icon = icons[item.type];
-            const dateLabel = new Date(item.date).toLocaleDateString(undefined, {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric'
-            });
+      ) : memoirs.length > 0 ? (
+        <div className="space-y-6">
+          <div className="relative border-l border-card-border/30 pl-6 ml-3 space-y-8 text-left">
+            {memoirs.map((item) => {
+              const Icon = icons[item.sourceType] || Clock;
+              const dateLabel = new Date(item.date + 'T00:00:00').toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+              });
 
-            return (
-              <div key={item.id} className="relative group space-y-1">
-                {/* Timeline node */}
-                <div className={`absolute -left-10 top-0.5 w-8 h-8 rounded-full border flex items-center justify-center transition-all ${colors[item.type]}`}>
-                  <Icon size={12} />
+              return (
+                <div key={item.id} className="relative group space-y-1">
+                  {/* Timeline node icon */}
+                  <div className={`absolute -left-10 top-0.5 w-8 h-8 rounded-full border flex items-center justify-center transition-all ${colors[item.sourceType]}`}>
+                    <Icon size={12} />
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-sharon-muted ">
+                      <span>{dateLabel}</span>
+                      <span>•</span>
+                      <span className="text-sharon-primary">{typeLabels[item.sourceType]}</span>
+                    </div>
+
+                    <Link
+                      href={item.linkedEntityUrl}
+                      className="text-[10px] font-semibold text-sharon-muted hover:text-sharon-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <span>Open Source</span>
+                      <ExternalLink size={9} />
+                    </Link>
+                  </div>
+
+                  <h3 className="text-sm font-semibold text-foreground leading-snug">
+                    {item.title}
+                  </h3>
+                  
+                  <p className="text-xs text-sharon-muted leading-relaxed font-serif italic max-w-xl">
+                    {item.excerpt}
+                  </p>
                 </div>
+              );
+            })}
+          </div>
 
-                <div className="flex items-center gap-2 text-[10px] font-bold text-sharon-muted uppercase tracking-wider">
-                  <span>{dateLabel}</span>
-                  <span>•</span>
-                  <span className="capitalize">{item.type}</span>
-                </div>
-
-                <h3 className="text-sm font-semibold text-foreground leading-snug">
-                  {item.title}
-                </h3>
-                
-                <p className="text-xs text-sharon-muted leading-relaxed font-serif italic max-w-xl">
-                  {item.description}
-                </p>
-              </div>
-            );
-          })}
+          {/* Pagination */}
+          <div className="flex items-center justify-between pt-4 border-t border-card-border/30">
+            <span className="text-xs text-sharon-muted">
+              Showing {memoirs.length} of {totalCount} events (Page {page} of {totalPages})
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                disabled={page <= 1}
+                onClick={() => setPage(page - 1)}
+                className="px-3 py-1.5 rounded-lg border border-card-border bg-card text-xs font-semibold text-foreground hover:bg-sharon-muted-light/60 disabled:opacity-40 cursor-pointer flex items-center gap-1"
+              >
+                <ChevronLeft size={12} /> Previous
+              </button>
+              <button
+                disabled={page >= totalPages}
+                onClick={() => setPage(page + 1)}
+                className="px-3 py-1.5 rounded-lg border border-card-border bg-card text-xs font-semibold text-foreground hover:bg-sharon-muted-light/60 disabled:opacity-40 cursor-pointer flex items-center gap-1"
+              >
+                Next <ChevronRight size={12} />
+              </button>
+            </div>
+          </div>
         </div>
       ) : (
-        <p className="text-xs text-sharon-muted italic py-12 text-center font-sans">Timeline index is empty. Complete goals, log book completions, or record daily wins to automatically compile records here.</p>
+        <p className="text-xs text-sharon-muted italic py-12 text-center">Timeline index is empty. Complete goals, conclude seasons, or log journal entries to populate records here.</p>
       )}
 
     </div>

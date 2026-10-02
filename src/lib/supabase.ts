@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-const isRealSupabaseConfigured = supabaseUrl && supabaseAnonKey;
+const isRealSupabaseConfigured = false;
 
 // Mock UUID Generator
 const generateUUID = () => {
@@ -178,6 +178,75 @@ const MOCK_INTELLECTUAL_LOGS = [
   { id: 'ig1', user_id: MOCK_PROFILE.id, date: new Date(Date.now() - 86400000).toISOString().split('T')[0], rotation_type: 'reading', response: 'Read System Design scaling: Horizontal scaling is easier when servers are stateless.', completed: true }
 ];
 
+const MOCK_RELATIONSHIPS = [
+  {
+    id: 'rel-1',
+    user_id: MOCK_PROFILE.id,
+    name: 'Sarah Connor',
+    type: 'Sponsor',
+    context: 'YPS Mentor & Advisor. Guides software career growth and leadership.',
+    notes: 'Very responsive on WhatsApp. Prefers concise updates.',
+    next_action: 'Send React resources & draft proposal',
+    waiting_on: 'Feedback on project roadmap',
+    reminders_frequency_days: 14,
+    last_contacted_date: '2026-08-28',
+    next_follow_up_date: '2026-09-05',
+    status: 'active',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'rel-2',
+    user_id: MOCK_PROFILE.id,
+    name: 'John Doe',
+    type: 'Recruiter',
+    context: 'Senior Tech Recruiter at Acme Corp',
+    notes: 'Reached out regarding Senior Developer roles.',
+    next_action: 'Send updated resume & portfolio link',
+    waiting_on: 'Interview schedule options for next week',
+    reminders_frequency_days: 7,
+    last_contacted_date: '2026-08-15',
+    next_follow_up_date: '2026-09-01', // Overdue
+    status: 'active',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'rel-3',
+    user_id: MOCK_PROFILE.id,
+    name: 'Jane Smith',
+    type: 'Friend',
+    context: 'Met at GDG Tech Conference 2025',
+    notes: 'Loves open source and UI design.',
+    next_action: null,
+    waiting_on: null,
+    reminders_frequency_days: 30,
+    last_contacted_date: '2026-08-30',
+    next_follow_up_date: null,
+    status: 'active',
+    created_at: new Date().toISOString()
+  }
+];
+
+const MOCK_RELATIONSHIP_INTERACTIONS = [
+  {
+    id: 'inter-1',
+    user_id: MOCK_PROFILE.id,
+    relationship_id: 'rel-1',
+    interaction_date: '2026-08-28',
+    type: 'WhatsApp',
+    notes: 'Sent message discussing React resources and career transition roadmap.',
+    created_at: new Date(Date.now() - 86400000 * 6).toISOString()
+  },
+  {
+    id: 'inter-2',
+    user_id: MOCK_PROFILE.id,
+    relationship_id: 'rel-1',
+    interaction_date: '2026-08-31',
+    type: 'Call',
+    notes: 'Had a 20-min alignment call on YPS project milestones.',
+    created_at: new Date(Date.now() - 86400000 * 3).toISOString()
+  }
+];
+
 // Helper to seed localStorage
 const seedLocalStorage = () => {
   if (typeof window === 'undefined') return;
@@ -202,6 +271,8 @@ const seedLocalStorage = () => {
   seed('sharon_db_future_letters', MOCK_FUTURE_LETTERS);
   seed('sharon_db_daily_check_ins', MOCK_DAILY_CHECKINS);
   seed('sharon_db_intellectual_growth_logs', MOCK_INTELLECTUAL_LOGS);
+  seed('sharon_db_relationships', MOCK_RELATIONSHIPS);
+  seed('sharon_db_relationship_interactions', MOCK_RELATIONSHIP_INTERACTIONS);
 };
 
 // Seed storage immediately if in browser
@@ -260,54 +331,50 @@ class MockSupabaseQueryBuilder<T = any> implements PromiseLike<{ data: T | null;
     return this;
   }
 
-  async insert(payload: any | any[]) {
-    const records = this.getData();
-    const toInsert = Array.isArray(payload) ? payload : [payload];
-    const created: any[] = [];
-
-    toInsert.forEach((item) => {
-      const newItem = {
-        id: item.id || generateUUID(),
-        user_id: item.user_id || 'sharon-user-uuid',
-        created_at: new Date().toISOString(),
-        ...item
-      };
-      records.push(newItem);
-      created.push(newItem);
-    });
-
-    this.saveData(records);
-    return { data: (this.isSingle ? created[0] : created) as any, error: null };
+  maybeSingle() {
+    this.isSingle = true;
+    return this;
   }
 
-  async update(payload: any) {
-    let records = this.getData();
-    const updated: any[] = [];
-
-    records = records.map((item) => {
-      const match = this.filters.every((f) => f(item));
-      if (match) {
-        const newItem = {
-          ...item,
-          ...payload,
-          updated_at: new Date().toISOString()
-        };
-        updated.push(newItem);
-        return newItem;
-      }
-      return item;
-    });
-
-    this.saveData(records);
-    return { data: (this.isSingle ? updated[0] : updated) as any, error: null };
+  gte(column: string, value: any) {
+    this.filters.push((item: any) => item[column] >= value);
+    return this;
   }
 
-  async delete() {
-    const records = this.getData();
-    const remaining = records.filter((item) => !this.filters.every((f) => f(item)));
-    const deleted = records.filter((item) => this.filters.every((f) => f(item)));
-    this.saveData(remaining);
-    return { data: deleted as any, error: null };
+  lte(column: string, value: any) {
+    this.filters.push((item: any) => item[column] <= value);
+    return this;
+  }
+
+  in(column: string, values: any[]) {
+    this.filters.push((item: any) => Array.isArray(values) && values.includes(item[column]));
+    return this;
+  }
+
+  neq(column: string, value: any) {
+    this.filters.push((item: any) => item[column] !== value);
+    return this;
+  }
+
+  private operation: 'select' | 'insert' | 'update' | 'delete' = 'select';
+  private insertPayload: any = null;
+  private updatePayload: any = null;
+
+  insert(payload: any | any[]) {
+    this.operation = 'insert';
+    this.insertPayload = payload;
+    return this;
+  }
+
+  update(payload: any) {
+    this.operation = 'update';
+    this.updatePayload = payload;
+    return this;
+  }
+
+  delete() {
+    this.operation = 'delete';
+    return this;
   }
 
   // Promise resolution
@@ -319,6 +386,56 @@ class MockSupabaseQueryBuilder<T = any> implements PromiseLike<{ data: T | null;
   }
 
   private async execute(): Promise<{ data: any | null; error: any }> {
+    if (this.operation === 'insert') {
+      const records = this.getData();
+      const toInsert = Array.isArray(this.insertPayload) ? this.insertPayload : [this.insertPayload];
+      const created: any[] = [];
+
+      toInsert.forEach((item) => {
+        const newItem = {
+          id: item.id || generateUUID(),
+          user_id: item.user_id || 'sharon-user-uuid',
+          created_at: new Date().toISOString(),
+          ...item
+        };
+        records.push(newItem);
+        created.push(newItem);
+      });
+
+      this.saveData(records);
+      return { data: (this.isSingle ? created[0] : created) as any, error: null };
+    }
+
+    if (this.operation === 'update') {
+      let records = this.getData();
+      const updated: any[] = [];
+
+      records = records.map((item) => {
+        const match = this.filters.every((f) => f(item));
+        if (match) {
+          const newItem = {
+            ...item,
+            ...this.updatePayload,
+            updated_at: new Date().toISOString()
+          };
+          updated.push(newItem);
+          return newItem;
+        }
+        return item;
+      });
+
+      this.saveData(records);
+      return { data: (this.isSingle ? updated[0] : updated) as any, error: null };
+    }
+
+    if (this.operation === 'delete') {
+      const records = this.getData();
+      const remaining = records.filter((item) => !this.filters.every((f) => f(item)));
+      const deleted = records.filter((item) => this.filters.every((f) => f(item)));
+      this.saveData(remaining);
+      return { data: deleted as any, error: null };
+    }
+
     let data = this.getData();
 
     // Apply filters

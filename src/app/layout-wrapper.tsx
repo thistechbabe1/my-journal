@@ -6,6 +6,7 @@ import { useAuth } from '@/providers/auth-provider';
 import Sidebar from '@/components/sidebar';
 import CommandPalette from '@/components/command-palette';
 import JournalSettings from '@/components/editorial/JournalSettings';
+import { NotificationCenter } from '@/components/notifications/notification-center';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -30,8 +31,8 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     return (
       <div className="fixed inset-0 bg-background flex flex-col items-center justify-center text-foreground z-50">
         <div className="flex flex-col items-center gap-3">
-          <span className="font-serif text-3xl font-light tracking-wide text-foreground">Sharon</span>
-          <span className="text-[10px] uppercase tracking-widest text-sharon-muted font-bold tracking-widest animate-pulse">
+          <span className="font-serif text-3xl font-light text-foreground">Sharon</span>
+          <span className="text-[10px] text-sharon-muted font-bold animate-pulse">
             Preparing your space
           </span>
         </div>
@@ -61,15 +62,15 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       <div className="md:hidden flex items-center justify-between px-5 py-3.5 bg-card border-b border-card-border sticky top-0 z-30">
         <button
           onClick={() => setMobileSidebarOpen(true)}
-          className="p-1 -ml-1 rounded-lg hover:bg-sharon-muted-light/60 text-sharon-muted hover:text-foreground cursor-pointer transition-colors"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 -ml-2 rounded-lg hover:bg-sharon-muted-light/60 text-sharon-muted hover:text-foreground cursor-pointer transition-colors"
           aria-label="Open navigation"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>
         </button>
-        <span className="font-serif text-xl font-medium tracking-wide text-foreground">Sharon</span>
-        <div className="w-6" /> {/* Balance space */}
+        <span className="font-serif text-xl font-medium text-foreground">Sharon</span>
+        <NotificationCenter />
       </div>
 
       {/* Mobile Drawer Backdrop */}

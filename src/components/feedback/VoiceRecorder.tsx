@@ -158,7 +158,7 @@ export default function VoiceRecorder({ onTranscribe }: VoiceRecorderProps) {
 
   if (isProcessing) {
     return (
-      <div className="flex items-center gap-1.5 text-[10px] text-sharon-primary font-sans font-bold uppercase tracking-wider select-none">
+      <div className="flex items-center gap-1.5 text-[10px] text-sharon-primary font-sans font-bold select-none">
         <Loader2 size={12} className="animate-spin" />
         <span>AI is transcribing to your voice...</span>
       </div>
@@ -170,7 +170,7 @@ export default function VoiceRecorder({ onTranscribe }: VoiceRecorderProps) {
       <button
         type="button"
         onClick={stopRecording}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-danger/30 bg-danger/5 hover:bg-danger/10 text-danger text-[10px] font-sans font-bold uppercase tracking-wider cursor-pointer transition-colors"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-danger/30 bg-danger/5 hover:bg-danger/10 text-danger text-[10px] font-sans font-bold cursor-pointer transition-colors"
       >
         <span className="w-1.5 h-1.5 rounded-full bg-danger animate-pulse" />
         <span>Recording {formatTime(duration)} · Stop</span>
@@ -183,7 +183,7 @@ export default function VoiceRecorder({ onTranscribe }: VoiceRecorderProps) {
     <button
       type="button"
       onClick={startRecording}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-card-border bg-card text-foreground hover:bg-sharon-muted-light/60 text-[10px] font-sans font-bold uppercase tracking-wider cursor-pointer transition-colors"
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-card-border bg-card text-foreground hover:bg-sharon-muted-light/60 text-[10px] font-sans font-bold cursor-pointer transition-colors"
       title="Record Voice Note"
     >
       <Mic size={11} className="text-sharon-muted" />

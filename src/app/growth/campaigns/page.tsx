@@ -4,12 +4,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
 import { useCampaigns } from '@/hooks/use-campaigns';
+import { useGoals } from '@/hooks/use-goals';
 import { campaignsService } from '@/services/campaigns-service';
 import { useIdentity } from '@/hooks/use-identity';
 import { Campaign, CampaignTask } from '@/types';
 import { 
   Megaphone, Plus, Calendar, Check, Edit3, Sparkles, 
-  ArrowLeft, CheckSquare, Globe, Trash2, Send, Mic 
+  ArrowLeft, CheckSquare, Globe, Trash2, Send, Mic, Target 
 } from 'lucide-react';
 import { useToast } from '@/components/feedback/ToastProvider';
 import { 
@@ -21,6 +22,7 @@ export default function CampaignsPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const { profile } = useIdentity();
+  const { goals } = useGoals();
   const { 
     campaigns, 
     activeCampaign, 
@@ -38,6 +40,7 @@ export default function CampaignsPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [goalId, setGoalId] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [promptsText, setPromptsText] = useState('');
@@ -220,6 +223,7 @@ export default function CampaignsPage() {
       const { data: newCampaign, error: campErr } = await campaignsService.saveCampaign(user!.id, {
         title,
         description,
+        goal_id: goalId || null,
         start_date: startDate,
         end_date: endDate,
         status: 'active'
@@ -288,12 +292,12 @@ export default function CampaignsPage() {
         <div>
           <Link
             href="/growth"
-            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light uppercase tracking-wider flex items-center gap-1 mb-2"
+            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light flex items-center gap-1 mb-2"
           >
             <ArrowLeft size={10} />
             <span>Growth Hub</span>
           </Link>
-          <h1 className="text-4xl font-serif font-light tracking-wide text-foreground">
+          <h1 className="text-4xl font-serif font-light text-foreground">
             Writing Campaigns
           </h1>
           <p className="text-xs text-sharon-muted mt-1.5 font-sans">
@@ -348,6 +352,22 @@ export default function CampaignsPage() {
                 />
               </div>
 
+              {goals.length > 0 && (
+                <div className="space-y-1 col-span-1 md:col-span-2">
+                  <FieldLabel>Linked Parent Goal</FieldLabel>
+                  <select
+                    value={goalId}
+                    onChange={(e) => setGoalId(e.target.value)}
+                    className="w-full bg-transparent border-0 border-b border-card-border/60 rounded-none py-1.5 px-0 text-xs outline-none focus:border-sharon-primary text-foreground font-semibold cursor-pointer"
+                  >
+                    <option value="">None (Standalone Campaign)</option>
+                    {goals.map((g) => (
+                      <option key={g.id} value={g.id}>{g.title}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <div className="space-y-1">
                 <FieldLabel>Start Date</FieldLabel>
                 <input
@@ -373,7 +393,7 @@ export default function CampaignsPage() {
               <div className="space-y-1 col-span-1 md:col-span-2">
                 <div className="flex justify-between items-center mb-1">
                   <FieldLabel>Batch Storytelling Prompts (One prompt per line)</FieldLabel>
-                  <span className="text-[9px] font-bold text-sharon-muted uppercase">Line count = Days</span>
+                  <span className="text-[9px] font-bold text-sharon-muted ">Line count = Days</span>
                 </div>
                 <textarea
                   placeholder="e.g.&#10;Why I chose Software Engineering&#10;My lowest academic point..."
@@ -408,7 +428,7 @@ export default function CampaignsPage() {
           <div className="lg:col-span-4 space-y-6 text-left font-sans">
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-card-border/20 pb-2">
-                <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-sharon-muted flex items-center gap-1.5">
                   <Megaphone size={12} />
                   <span>Campaign Hub</span>
                 </span>
@@ -437,7 +457,7 @@ export default function CampaignsPage() {
                           <span className={`text-xs font-serif leading-tight ${isSelected ? 'text-sharon-primary font-bold' : 'text-foreground'}`}>
                             {c.title}
                           </span>
-                          <span className={`text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border shrink-0 ${
+                          <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border shrink-0 ${
                             isActive 
                               ? 'bg-sharon-primary/10 border-sharon-primary/20 text-sharon-primary'
                               : 'bg-sharon-muted-light border-card-border/40 text-sharon-muted'
@@ -478,7 +498,7 @@ export default function CampaignsPage() {
             {selectedCampaign && (
               <div className="space-y-4 pt-4 border-t border-card-border/10">
                 <div className="flex justify-between items-center pb-2">
-                  <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest">
+                  <span className="text-[10px] font-bold text-sharon-muted ">
                     Campaign stages
                   </span>
                   <span className="text-[9px] font-bold text-sharon-muted bg-sharon-muted-light/60 border border-card-border/40 px-1.5 py-0.5 rounded">
@@ -546,7 +566,7 @@ export default function CampaignsPage() {
                 {/* Stage Header */}
                 <div className="flex justify-between items-start border-b border-card-border/20 pb-4">
                   <div>
-                    <span className="text-[9px] font-bold text-sharon-primary bg-sharon-primary/10 border border-sharon-primary/20 px-2 py-0.5 rounded uppercase tracking-wider">
+                    <span className="text-[9px] font-bold text-sharon-primary bg-sharon-primary/10 border border-sharon-primary/20 px-2 py-0.5 rounded ">
                       {selectedCampaign?.title} • {selectedTask.title}
                     </span>
                     <h3 className="font-serif text-2xl font-light text-foreground mt-2 leading-snug">
@@ -578,7 +598,7 @@ export default function CampaignsPage() {
                     <button
                       onClick={handleAIRefine}
                       disabled={refiningAI || !draftContent.trim()}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-card-border bg-card text-sharon-muted hover:text-foreground hover:bg-sharon-muted-light/60 text-[10px] font-bold uppercase tracking-wider cursor-pointer transition-all disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-card-border bg-card text-sharon-muted hover:text-foreground hover:bg-sharon-muted-light/60 text-[10px] font-bold cursor-pointer transition-all disabled:opacity-50"
                       title="Refine with Gemini AI"
                     >
                       {refiningAI ? (

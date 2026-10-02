@@ -199,12 +199,12 @@ export default function LearningPage() {
         <div>
           <Link
             href="/growth"
-            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light uppercase tracking-wider flex items-center gap-1 mb-2"
+            className="text-[10px] font-bold text-sharon-primary hover:text-sharon-primary-light flex items-center gap-1 mb-2"
           >
             <ArrowLeft size={10} />
             <span>Growth Hub</span>
           </Link>
-          <h1 className="text-4xl font-serif font-light tracking-wide text-foreground">
+          <h1 className="text-4xl font-serif font-light text-foreground">
             Learning & Skills
           </h1>
           <p className="text-xs text-sharon-muted mt-1.5 font-sans">
@@ -238,7 +238,7 @@ export default function LearningPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1 col-span-1 md:col-span-2">
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Resource Title</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">Resource Title</span>
               <input
                 type="text"
                 placeholder="e.g. Designing Data-Intensive Applications"
@@ -250,7 +250,7 @@ export default function LearningPage() {
             </div>
 
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Author / Host</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">Author / Host</span>
               <input
                 type="text"
                 placeholder="e.g. Martin Kleppmann"
@@ -261,7 +261,7 @@ export default function LearningPage() {
             </div>
 
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Resource Type</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">Resource Type</span>
               <select
                 value={resourceType}
                 onChange={(e) => setResourceType(e.target.value as any)}
@@ -276,7 +276,7 @@ export default function LearningPage() {
             </div>
 
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Subject / Category</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">Subject / Category</span>
               <input
                 type="text"
                 placeholder="e.g. System Design, Leadership"
@@ -287,7 +287,7 @@ export default function LearningPage() {
             </div>
 
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Initial Status</span>
+              <span className="text-[10px] font-bold text-sharon-muted block">Initial Status</span>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as any)}
@@ -345,7 +345,7 @@ export default function LearningPage() {
                         <span className={`text-xs font-serif leading-tight ${isSelected ? 'text-sharon-primary font-bold' : 'text-foreground'}`}>
                           {res.title}
                         </span>
-                        <span className="text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border shrink-0 bg-sharon-muted-light border-card-border/40 text-sharon-muted">
+                        <span className="text-[8px] font-bold px-1.5 py-0.5 rounded border shrink-0 bg-sharon-muted-light border-card-border/40 text-sharon-muted">
                           {res.status}
                         </span>
                       </div>
@@ -379,7 +379,7 @@ export default function LearningPage() {
                 {/* Details Header */}
                 <div className="flex justify-between items-start border-b border-card-border/20 pb-4">
                   <div>
-                    <span className="text-[9px] font-bold text-sharon-primary bg-sharon-primary/10 border border-sharon-primary/20 px-2 py-0.5 rounded uppercase tracking-wider">
+                    <span className="text-[9px] font-bold text-sharon-primary bg-sharon-primary/10 border border-sharon-primary/20 px-2 py-0.5 rounded ">
                       {activeResource.category || 'Core Skill'} • {typeLabels[activeResource.resource_type]}
                     </span>
                     <h3 className="font-serif text-2xl font-light text-foreground mt-2 leading-snug">
@@ -408,7 +408,7 @@ export default function LearningPage() {
 
                 {/* Lessons Learned */}
                 <div className="space-y-2">
-                  <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Lessons & Takeaways</span>
+                  <span className="text-[10px] font-bold text-sharon-muted block">Lessons & Takeaways</span>
                   <textarea
                     placeholder="Decant the core ideas and learning logs..."
                     rows={6}
@@ -421,7 +421,7 @@ export default function LearningPage() {
 
                 {/* Personal reflections */}
                 <div className="space-y-2">
-                  <span className="text-[10px] font-bold text-sharon-muted uppercase tracking-widest block">Personal Reflections & Application</span>
+                  <span className="text-[10px] font-bold text-sharon-muted block">Personal Reflections & Application</span>
                   <textarea
                     placeholder="How does this apply to your work or leadership constitution?"
                     rows={6}
